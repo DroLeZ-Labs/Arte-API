@@ -1,0 +1,9 @@
+{
+  "users/create": "users/Create.php",
+  "users": "users/GetAll.php",
+  "users/delete": "users/Delete.php",
+  "users/{user_id}": "users/Info.php",
+  "users/{user_id}/friend/": "users/GetFriend.php",
+  "users/{user_id}/friend/set": "users/SetFriend.php",
+  "generateToken": "GenerateToken.php"
+}
