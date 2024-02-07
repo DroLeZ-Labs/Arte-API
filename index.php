@@ -1,21 +1,16 @@
 <?php
 
-/** This file needs major update */
-
 ob_start();
 
-require "core/config.php";
-require "config.php";
 require "autoload.php";
 
 require "core/proxy/Logger.php";
-require "core/proxy/Router.php";
 require "core/proxy/Response.php";
 
 // Initialize the logger
 $logger = Logger::getLogger();
 
-$router = new Router();
+$router = Router::getInst();
 $route = $router->route();
 
 if (!isset($route->endpoint))

@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '21d54175b67e7ec301f4e756214b60358a997f2b',
+        'reference' => '2e4f42664641344b41da03a31d5e270506b507e9',
         'name' => '__root__',
         'dev' => true,
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '21d54175b67e7ec301f4e756214b60358a997f2b',
+            'reference' => '2e4f42664641344b41da03a31d5e270506b507e9',
             'dev_requirement' => false,
         ),
         'firebase/php-jwt' => array(

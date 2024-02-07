@@ -4,21 +4,23 @@ header('Access-Control-Allow-Origin: *');
 
 ini_set("precision", 3);
 
-// APP Definitions
-const APP = "Nframework API";
-
 // Locations
 const LOCAL = '.';
 
-const LOG_DIR =  LOCAL . "/logs";
-const MEDIA_DIR =  LOCAL . "/media";
 const ENDPOINTS_DIR =  LOCAL . "/app/endpoints";
 const ROUTES_JSON = LOCAL . '/routes.json';
+
+const PLUGINS_DIR = LOCAL . '/plugins';
+const LOG_DIR =  LOCAL . "/logs";
+const MEDIA_DIR =  LOCAL . "/media";
 
 if (isset($_REQUEST['debug']))
   define('DEBUG', true);
 else
   define('DEBUG', false);
+
+const MYSQL = 1;
+const SQLITE = 2;
 
 if (!function_exists('str_contains')) {
   function str_contains(string $haystack, string $needle): bool
@@ -27,82 +29,4 @@ if (!function_exists('str_contains')) {
   }
 }
 
-function isJson($payload)
-{
-  if (!is_string($payload))
-    return false;
-
-  if (!empty($payload) && $payload[0] != '{' && $payload[0] != '[')
-    return false;
-
-  json_decode($payload);
-  return json_last_error() === JSON_ERROR_NONE;
-}
-
-function trace(Exception $e, $seen = null): string
-{
-  $starter = $seen ? 'Caused by: ' : '';
-  $result = array();
-  if (!$seen) $seen = array();
-  $trace = $e->getTrace();
-  $prev = $e->getPrevious();
-  $result[] = sprintf('%s%s: %s', $starter, get_class($e), $e->getMessage());
-  $file = $e->getFile();
-  $line = $e->getLine();
-  while (true) {
-    $current = "$file:$line";
-    if (is_array($seen) && in_array($current, $seen)) {
-      $result[] = sprintf(' ... %d more', count($trace) + 1);
-      break;
-    }
-    $result[] = sprintf(
-      ' at %s%s%s(%s%s%s)',
-      count($trace) && array_key_exists('class', $trace[0]) ? str_replace('\\', '.', $trace[0]['class']) : '',
-      count($trace) && array_key_exists('class', $trace[0]) && array_key_exists('function', $trace[0]) ? '.' : '',
-      count($trace) && array_key_exists('function', $trace[0]) ? str_replace('\\', '.', $trace[0]['function']) : '(main)',
-      $line === null ? $file : basename($file),
-      $line === null ? '' : ':',
-      $line === null ? '' : $line
-    );
-    if (is_array($seen))
-      $seen[] = "$file:$line";
-    if (!count($trace))
-      break;
-    $file = array_key_exists('file', $trace[0]) ? $trace[0]['file'] : 'Unknown Source';
-    $line = array_key_exists('file', $trace[0]) && array_key_exists('line', $trace[0]) && $trace[0]['line'] ? $trace[0]['line'] : null;
-    array_shift($trace);
-  }
-  $result = join("\n", $result);
-  if ($prev)
-    $result .= "\n" . trace($prev, $seen);
-
-  return $result;
-}
-
-function isAssoc(array $array)
-{
-  return array_keys($array) !== range(0, count($array) - 1);
-}
-
-class PostHandle
-{
-  private static array $callbacks = [];
-
-  public static function add(string $callback, ...$params)
-  {
-    self::$callbacks[] = [$callback, $params];
-  }
-
-  public static function run()
-  {
-    foreach (self::$callbacks as $temp) {
-      $callback = $temp[0];
-      $params = $temp[1];
-
-      try {
-        $callback(...$params);
-      } catch (Exception $e) {
-      }
-    }
-  }
-}
+require LOCAL . '/core/functions.php';

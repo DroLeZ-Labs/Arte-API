@@ -4,7 +4,6 @@ class DB
 {
 	/**
 	 * Singleton DB manipulator.
-	 * @todo Support mysql
 	 */
 
 	private static $instance;
@@ -12,11 +11,11 @@ class DB
 
 	public function __construct()
 	{
-		if (DB_MODE == "Sqlite") {
+		if (DB_MODE == SQLITE) {
 			$this->db = new PDO('sqlite:' . DB_PATH);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->db->exec('PRAGMA foreign_keys = ON;');
-		} else if (DB_MODE == 'MySql') {
+		} else if (DB_MODE == MYSQL) {
 			$this->db = new PDO("mysql:host=" . HOST . ";dbname=" . DBNAME, USERNAME, PASSWORD);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} else
@@ -135,7 +134,7 @@ class DB
 
 	private function getConflicts(string $err): mixed
 	{
-		if (DB_MODE == 'Sqlite') {
+		if (DB_MODE == SQLITE) {
 			$conflicts = explode(',', explode("failed: ", $err)[1]);
 			foreach ($conflicts as &$conflict)
 				$conflict = explode('.', $conflict)[1];

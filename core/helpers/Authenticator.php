@@ -1,5 +1,8 @@
 <?php
 
+// JWT Secret
+const SECRET = 'secret_key';
+
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 

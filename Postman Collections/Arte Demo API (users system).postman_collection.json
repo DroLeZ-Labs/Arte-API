@@ -1,0 +1,1000 @@
+{
+	"info": {
+		"_postman_id": "94b60538-6a2e-451b-a0e8-ae14e9d1bd98",
+		"name": "Arte Demo API (users system)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20822676",
+		"_collection_link": "https://www.postman.com/abdelrahman-lawaty/workspace/arte-api/collection/20822676-94b60538-6a2e-451b-a0e8-ae14e9d1bd98?action=share&source=collection_link&creator=20822676"
+	},
+	"item": [
+		{
+			"name": "Friends",
+			"item": [
+				{
+					"name": "Friend",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/users/{{user_id}}/friend",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}",
+								"friend"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "no friend",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API}}/users/{{user_id}}/friend",
+									"host": [
+										"{{API}}"
+									],
+									"path": [
+										"users",
+										"{{user_id}}",
+										"friend"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 28 Jan 2024 12:30:29 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.1"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "Content-Length",
+									"value": "0"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "origin, x-requested-with, content-type"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET, POST"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain;charset=UTF-8"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "friend exists",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API}}/users/{{user_id}}/friend",
+									"host": [
+										"{{API}}"
+									],
+									"path": [
+										"users",
+										"{{user_id}}",
+										"friend"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 07 Feb 2024 00:10:30 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.1"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "Content-Length",
+									"value": "82"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "origin, x-requested-with, content-type"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET, POST"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain;charset=UTF-8"
+								}
+							],
+							"cookie": [],
+							"body": "{\"id\":13,\"username\":\"lawaty2\",\"email\":\"abdelrahmanlawaty@gmail.com\",\"friend\":null}"
+						}
+					]
+				},
+				{
+					"name": "SetFriend",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "friend_id",
+									"value": "13",
+									"type": "text"
+								},
+								{
+									"key": "debug",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API}}/users/{{user_id}}/friend/set",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}",
+								"friend",
+								"set"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Friend Not Found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "friend_id",
+											"value": "15",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{API}}/users/{{user_id}}/friend/set",
+									"host": [
+										"{{API}}"
+									],
+									"path": [
+										"users",
+										"{{user_id}}",
+										"friend",
+										"set"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "plain",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Sun, 28 Jan 2024 12:32:23 GMT"
+								},
+								{
+									"key": "Server",
+									"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+								},
+								{
+									"key": "X-Powered-By",
+									"value": "PHP/8.1.1"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								},
+								{
+									"key": "Content-Length",
+									"value": "16"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "origin, x-requested-with, content-type"
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "GET, POST"
+								},
+								{
+									"key": "Content-Type",
+									"value": "text/plain;charset=UTF-8"
+								}
+							],
+							"cookie": [],
+							"body": "Friend Not Found"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Create",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "lawaty2",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "lawaty2",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "abdelrahmanlawaty@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "debug",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API}}/users/create",
+					"host": [
+						"{{API}}"
+					],
+					"path": [
+						"users",
+						"create"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Already Exists",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "lawaty",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "abdelrahmanlawaty@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "debug",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API}}/users/create",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"users",
+								"create"
+							]
+						}
+					},
+					"status": "Conflict",
+					"code": 409,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jan 2024 11:37:59 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Content-Length",
+							"value": "23"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "origin, x-requested-with, content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET, POST"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						}
+					],
+					"cookie": [],
+					"body": "Username Already Exists"
+				},
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "lawaty",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "abdelrahmanlawaty@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "debug",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API}}/users/create",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"users",
+								"create"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jan 2024 11:41:55 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Content-Length",
+							"value": "93"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "origin, x-requested-with, content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET, POST"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						}
+					],
+					"cookie": [],
+					"body": "{\"username\":\"lawaty\",\"email\":\"abdelrahmanlawaty@gmail.com\",\"friend\":null}"
+				}
+			]
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "6",
+							"type": "text"
+						},
+						{
+							"key": "debug",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{API}}/users/delete",
+					"host": [
+						"{{API}}"
+					],
+					"path": [
+						"users",
+						"delete"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Error or Not Found",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "debug",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API}}/users/delete",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"users",
+								"delete"
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jan 2024 11:40:04 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "origin, x-requested-with, content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET, POST"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				},
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "6",
+									"type": "text"
+								},
+								{
+									"key": "debug",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API}}/users/delete",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"users",
+								"delete"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Sun, 28 Jan 2024 11:41:43 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "origin, x-requested-with, content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET, POST"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "Get All",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API}}/users",
+					"host": [
+						"{{API}}"
+					],
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "debug",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/users",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "debug",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 07 Feb 2024 00:13:09 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Content-Length",
+							"value": "205"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "origin, x-requested-with, content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET, POST"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						}
+					],
+					"cookie": [],
+					"body": "[{\"id\":12,\"username\":\"lawaty\",\"password\":\"lawaty\",\"email\":\"abdelrahmanlawaty@gmail.com\",\"friend\":13},{\"id\":13,\"username\":\"lawaty2\",\"password\":\"lawaty2\",\"email\":\"abdelrahmanlawaty@gmail.com\",\"friend\":null}]"
+				}
+			]
+		},
+		{
+			"name": "GetInfo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API}}/users/{{user_id}}",
+					"host": [
+						"{{API}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success and friend exists",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/users/{{user_id}}",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 07 Feb 2024 00:13:56 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Content-Length",
+							"value": "159"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "origin, x-requested-with, content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET, POST"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						}
+					],
+					"cookie": [],
+					"body": "{\"id\":12,\"username\":\"lawaty\",\"email\":\"abdelrahmanlawaty@gmail.com\",\"friend\":{\"id\":13,\"username\":\"lawaty2\",\"email\":\"abdelrahmanlawaty@gmail.com\",\"friend\":null}}"
+				},
+				{
+					"name": "success without friend",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API}}/users/{{user_id}}",
+							"host": [
+								"{{API}}"
+							],
+							"path": [
+								"users",
+								"{{user_id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 07 Feb 2024 00:14:39 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Content-Length",
+							"value": "82"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "origin, x-requested-with, content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET, POST"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						}
+					],
+					"cookie": [],
+					"body": "{\"id\":13,\"username\":\"lawaty2\",\"email\":\"abdelrahmanlawaty@gmail.com\",\"friend\":null}"
+				}
+			]
+		},
+		{
+			"name": "GenerateToken",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api}}/generateToken?id={{user_id}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"generateToken"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "{{user_id}}"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/generateToken?id={{user_id}}",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"generateToken"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Wed, 07 Feb 2024 00:08:05 GMT"
+						},
+						{
+							"key": "Server",
+							"value": "Apache/2.4.52 (Unix) OpenSSL/1.1.1m PHP/8.1.1 mod_perl/2.0.11 Perl/v5.32.1"
+						},
+						{
+							"key": "X-Powered-By",
+							"value": "PHP/8.1.1"
+						},
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Connection",
+							"value": "close"
+						},
+						{
+							"key": "Content-Length",
+							"value": "95"
+						},
+						{
+							"key": "Access-Control-Allow-Headers",
+							"value": "origin, x-requested-with, content-type"
+						},
+						{
+							"key": "Access-Control-Allow-Methods",
+							"value": "GET, POST"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						}
+					],
+					"cookie": [],
+					"body": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEifQ._7ZbisUlTr4xi9Ltozcjn5kiuJgJNxgg8pd8MAtq4Y4"
+				}
+			]
+		}
+	]
+}

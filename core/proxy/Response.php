@@ -2,7 +2,6 @@
 
 /**
  * The Response class handles HTTP responses.
- * @todo this response class needs to be updated (allow content_type in the constructor and background processing not working here)
  */
 class Response
 {
@@ -14,7 +13,12 @@ class Response
   /**
    * @var mixed The response body.
    */
-  private $body;
+  private mixed $body;
+
+  /**
+   * @var mixed Any extra headers to be added to response
+   */
+  private array $headers;
 
   /**
    * @var string The hidden buffer for debug mode.
@@ -27,23 +31,16 @@ class Response
    * @param mixed $body The response body (optional).
    * @param int $code The HTTP response code (default: 200).
    */
-  public function __construct($body = '', $code = 200)
+  public function __construct($body = '', int $code = 200, array $extra_headers = [])
   {
-    $this->code = $code;
-    $this->body = $body ?? '';
-  }
+    if (is_iterable($body) || $body instanceof JsonSerializable)
+      $this->body = json_encode($body, JSON_UNESCAPED_UNICODE);
+    else
+      $this->body = $body;
 
-  /**
-   * Formats the response as an array.
-   *
-   * @return array The formatted response.
-   */
-  public function format()
-  {
-    return [
-      'code' => $this->code,
-      'body' => $this->body
-    ];
+    $this->code = $code;
+
+    $this->headers = $extra_headers;
   }
 
   /**
@@ -68,37 +65,60 @@ class Response
 
   /**
    * Outputs the response.
-   * @todo what the hell is that File class, That's not a core thing bro, write it in app not here !!
    */
   public function echo(): void
   {
-    header('Content-Type: text/plain', true);
+    // Preparing Variables and Settings
     header('Connection: close');
     ignore_user_abort(true);
 
     $this->hidden_buffer = ob_get_clean();
 
-    $body = '';
-    if (is_iterable($this->body) || $this->body instanceof JsonSerializable)
-      $body = json_encode($this->body, JSON_UNESCAPED_UNICODE);
-    else if (is_string($this->body))
-      $body = $this->body;
-
-    if(DEBUG){
-      header('Content-Length: ' . strlen($body) + strlen($this->hidden_buffer));
-      echo $this->hidden_buffer;
+    // Headers Section
+    if ($this->body instanceof ResponseFile) {
+      header("Content-Type: " . $this->body->mime, true);
+    } else {
+      if (DEBUG) {
+        header('Content-Length: ' . strlen($this->body) + strlen($this->hidden_buffer));
+      } else
+        header('Content-Length: ' . strlen($this->body));
     }
-    else
-      header('Content-Length: ' . strlen($body));
-
-
-    echo $body;
     http_response_code($this->code);
+    // Extra Headers
+    foreach ($this->headers as $header)
+      header($header);
+
+    // Output Section
+    if ($this->body instanceof ResponseFile)
+      readfile($this->body->path);
+    else if (DEBUG) {
+      echo $this->hidden_buffer;
+      echo $this->body;
+    } else
+      echo $this->body;
 
     // Closing Connection
     while (ob_get_level() > 0)
       ob_end_flush();
 
     flush();
+  }
+}
+
+class ResponseFile
+{
+  public string $path;
+  public string $mime;
+
+  public function __construct(string $path)
+  {
+    if (!file_exists($path))
+      throw new FileDoesNotExist($path);
+
+    $this->path = $path;
+
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $this->mime = finfo_file($finfo, $this->path);
+    finfo_close($finfo);
   }
 }

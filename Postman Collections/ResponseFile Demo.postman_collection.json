@@ -1,0 +1,47 @@
+{
+	"info": {
+		"_postman_id": "81cf8afc-b79d-431a-ae80-b2f78f0b3a24",
+		"name": "ResponseFile Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20822676",
+		"_collection_link": "https://www.postman.com/abdelrahman-lawaty/workspace/arte-api/collection/20822676-81cf8afc-b79d-431a-ae80-b2f78f0b3a24?action=share&source=collection_link&creator=20822676"
+	},
+	"item": [
+		{
+			"name": "Zip",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API}}/files/zip",
+					"host": [
+						"{{API}}"
+					],
+					"path": [
+						"files",
+						"zip"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mp4",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API}}/files/mp4",
+					"host": [
+						"{{API}}"
+					],
+					"path": [
+						"files",
+						"mp4"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

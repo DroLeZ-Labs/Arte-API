@@ -104,6 +104,10 @@ See app/model/mappers/README.md
 16. used normal set method instead of edit with save for updating persistance layer // Done
 17. Smarter DBScript and DB works for both MySQL and SQLite // Done
 18. Better Separation allows overriding core classes in app thus updating core files without affecting the application behavior // Done
+20. Plugins Complete Structure (src files, autoload, install, uninstall)
+21. Plugins Arte Core API (3 endpoints for managing plugins — install, uninstall, reinstall)
+22. ResponseFile for reading files and flushing them easily
+23. Flexible parameterized Response headers
 
 9. Mapper naive joining // Won't work on this now
 12. Plugins // Not Yet

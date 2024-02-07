@@ -2,14 +2,24 @@
 
 class Router
 {
+  private static Router $inst;
+
   private Route $route;
   private array $routes;
+
+  public static function getInst(): Router
+  {
+    if (!isset(static::$inst))
+      static::$inst = new Router;
+
+    return static::$inst;
+  }
 
   public function __construct()
   {
     $this->route = new Route;
 
-    $requestUri = $_SERVER['REQUEST_URI'];
+    $requestUri = $_SERVER['REQUEST_URI'] ?? "";
     if (($pos = strpos($requestUri, API_BASE)) !== false)
       $requestUri = substr($requestUri, $pos + strlen(API_BASE));
 
@@ -20,41 +30,52 @@ class Router
     $this->routes = json_decode(file_get_contents(ROUTES_JSON), true);
   }
 
+  public function addRoutes(array $routes)
+  {
+    $this->routes = array_merge($this->routes, $routes);
+  }
+
   public function route(): Route
   {
     foreach ($this->routes as $pattern => $endpoint) {
-      $pattern = trim($pattern, '/');
-      $patternSections = explode('/', $pattern);
+      if (is_array($params = $this->matching($pattern))) {
+        if (file_exists($endpoint))
+          require $endpoint;
+        else
+          require ENDPOINTS_DIR . "/$endpoint";
 
-      if (count($patternSections) === count(explode('/', $this->route->uri))) {
-        $params = [];
-
-        $match = true;
-        foreach ($patternSections as $index => $patternSection) {
-          if (
-            $patternSection !== explode('/', $this->route->uri)[$index] &&
-            !preg_match('/\{(.+?)\}/', $patternSection)
-          ) {
-            $match = false;
-            break;
-          }
-
-          if (preg_match('/\{(.+?)\}/', $patternSection, $matches))
-            $params[$matches[1]] = explode('/', $this->route->uri)[$index];
-        }
-
-        if ($match) {
-          $path = $endpoint;
-          require ENDPOINTS_DIR . "/$path";
-          $endpoint_name = pathinfo($endpoint, PATHINFO_FILENAME);
-          $this->route->endpoint = new $endpoint_name;
-          $this->route->endpoint->request = [...$this->route->endpoint->request, ...$params];
-          break;
-        }
+        $endpoint_name = pathinfo($endpoint, PATHINFO_FILENAME);
+        $this->route->endpoint = new $endpoint_name;
+        $this->route->endpoint->request = [...$this->route->endpoint->request, ...$params];
+        break;
       }
     }
 
     return $this->route;
+  }
+
+  private function matching(string $pattern): ?array
+  {
+    $patternSections = explode('/', trim($pattern, '/'));
+
+    if (count($patternSections) !== count(explode('/', $this->route->uri)))
+      return null;
+
+    $params = [];
+
+    foreach ($patternSections as $index => $patternSection) {
+      if (
+        $patternSection !== explode('/', $this->route->uri)[$index] &&
+        !preg_match('/\{(.+?)\}/', $patternSection)
+      ) {
+        return null;
+      }
+
+      if (preg_match('/\{(.+?)\}/', $patternSection, $matches))
+        $params[$matches[1]] = explode('/', $this->route->uri)[$index];
+    }
+
+    return $params;
   }
 }
 

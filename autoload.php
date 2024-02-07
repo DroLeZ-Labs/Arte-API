@@ -1,61 +1,111 @@
 <?php
 
+require_once "core/config.php";
+require_once "config.php";
+
 require LOCAL . '/vendor/autoload.php';
 
-const ENTITIES_DIR = LOCAL . '/app/model/entities';
-const MAPPERS_DIR = LOCAL . '/app/model/mappers';
-const SERVICES_DIR = LOCAL . '/app/model/services';
+class Autoloader
+{
+  const ENTITIES_DIR = LOCAL . '/app/model/entities';
+  const MAPPERS_DIR = LOCAL . '/app/model/mappers';
+  const SERVICES_DIR = LOCAL . '/app/model/services';
 
-// TODO: move system helpers to /core and define user helpers inside /app
-const SYSTEM_HELPERS_DIR = LOCAL . '/core/helpers';
-const USER_HELPERS_DIR = LOCAL . '/app/helpers';
+  const SYSTEM_HELPERS_DIR = LOCAL . '/core/helpers';
+  const USER_HELPERS_DIR = LOCAL . '/app/helpers';
 
-const SYSTEM_BASES_DIR = LOCAL . '/core/bases';
-const USER_BASES_DIR = LOCAL . '/app/bases';
+  const SYSTEM_BASES_DIR = LOCAL . '/core/bases';
+  const USER_BASES_DIR = LOCAL . '/app/bases';
 
-const SYSTEM_EXCEPTIONS_DIR = LOCAL . '/core/exceptions';
-const USER_EXCEPTIONS_DIR = LOCAL . '/app/exceptions';
+  const SYSTEM_EXCEPTIONS_DIR = LOCAL . '/core/exceptions';
+  const USER_EXCEPTIONS_DIR = LOCAL . '/app/exceptions';
 
-const USER_LIBS_DIR = LOCAL . '/app/lib';
+  const USER_LIBS_DIR = LOCAL . '/app/lib';
 
-const DB_DIR = LOCAL . '/core/database';
+  const DB_DIR = LOCAL . '/core/database';
+
+  private static Autoloader $inst;
+  private array $dynamic_dependencies = [];
+
+  public static function getLoader(): Autoloader
+  {
+    if (!isset(self::$inst))
+      self::$inst = new Autoloader;
+
+    return self::$inst;
+  }
+
+  public function __construct()
+  {
+  }
+
+  public function load(string $classname)
+  {
+    if (isset($this->dynamic_dependencies[$classname]))
+      require $this->dynamic_dependencies[$classname];
+
+    else if (file_exists(self::DB_DIR . "/$classname.php"))
+      require self::DB_DIR . "/$classname.php";
+
+    else if (file_exists(self::MAPPERS_DIR . "/$classname.php"))
+      require self::MAPPERS_DIR . "/$classname.php";
+    else if (file_exists(self::ENTITIES_DIR . "/$classname.php"))
+      require self::ENTITIES_DIR . "/$classname.php";
+    else if (file_exists(self::SERVICES_DIR . "/$classname.php"))
+      require self::SERVICES_DIR . "/$classname.php";
+
+    else if (file_exists(self::USER_HELPERS_DIR . "/$classname.php"))
+      require self::USER_HELPERS_DIR . "/$classname.php";
+    else if (file_exists(self::SYSTEM_HELPERS_DIR . "/$classname.php"))
+      require self::SYSTEM_HELPERS_DIR . "/$classname.php";
+
+    else if (file_exists(self::USER_BASES_DIR . "/$classname.php"))
+      require self::USER_BASES_DIR . "/$classname.php";
+    else if (file_exists(self::SYSTEM_BASES_DIR . "/$classname.php"))
+      require self::SYSTEM_BASES_DIR . "/$classname.php";
+
+    else if (file_exists(self::USER_EXCEPTIONS_DIR . "/$classname.php"))
+      require self::USER_EXCEPTIONS_DIR . "/$classname.php";
+    else if (file_exists(self::SYSTEM_EXCEPTIONS_DIR . "/$classname.php"))
+      require self::SYSTEM_EXCEPTIONS_DIR . "/$classname.php";
+
+    else if (file_exists(self::USER_LIBS_DIR . "/$classname.php"))
+      require self::USER_EXCEPTIONS_DIR . "/$classname.php";
+  }
+
+  /**
+   * @param array associative array associates every class with its definition location
+   */
+  public function push_dependencies(string $plugin, array $dependencies)
+  {
+    foreach ($dependencies as $dependency => $location)
+      $this->dynamic_dependencies[$dependency] = LOCAL . "/plugins/$plugin/src/$location";
+  }
+}
 
 /**
- * The autoload function is responsible for automatically loading classes when they are referenced.
- * It utilizes the predefined file paths for different class categories.
- *
- * @param string $class_name The name of the class to be loaded.
- * @throws Fail If the class is not found.
+ * Arte Default Autoloader
  */
-spl_autoload_register(function ($class_name) {
-  $temp = explode('\\', $class_name);
-  $file_name = end($temp);
-
-  if (file_exists(DB_DIR . "/$file_name.php"))
-    require DB_DIR . "/$file_name.php";
-
-  else if (file_exists(MAPPERS_DIR . "/$file_name.php"))
-    require MAPPERS_DIR . "/$file_name.php";
-  else if (file_exists(ENTITIES_DIR . "/$file_name.php"))
-    require ENTITIES_DIR . "/$file_name.php";
-  else if (file_exists(SERVICES_DIR . "/$file_name.php"))
-    require SERVICES_DIR . "/$file_name.php";
-
-  else if (file_exists(USER_HELPERS_DIR . "/$file_name.php"))
-    require USER_HELPERS_DIR . "/$file_name.php";
-  else if (file_exists(SYSTEM_HELPERS_DIR . "/$file_name.php"))
-    require SYSTEM_HELPERS_DIR . "/$file_name.php";
-
-  else if (file_exists(USER_BASES_DIR . "/$file_name.php"))
-    require USER_BASES_DIR . "/$file_name.php";
-  else if (file_exists(SYSTEM_BASES_DIR . "/$file_name.php"))
-    require SYSTEM_BASES_DIR . "/$file_name.php";
-
-  else if (file_exists(USER_EXCEPTIONS_DIR . "/$file_name.php"))
-    require USER_EXCEPTIONS_DIR . "/$file_name.php";
-  else if (file_exists(SYSTEM_EXCEPTIONS_DIR . "/$file_name.php"))
-    require SYSTEM_EXCEPTIONS_DIR . "/$file_name.php";
-
-  else if (file_exists(USER_LIBS_DIR . "/$file_name.php"))
-    require USER_EXCEPTIONS_DIR . "/$file_name.php";
+$autoloader = Autoloader::getLoader();
+spl_autoload_register(function ($classname) {
+  global $autoloader;
+  $autoloader->load($classname);
 });
+
+/**
+ * Arte Core Routes
+ */
+require_once __DIR__ . '/core/proxy/Router.php';
+Router::getInst()->addRoutes([
+  'arte/installPlugin' => __DIR__ . '/core/API/endpoints/InstallPlugin.php',
+  'arte/uninstallPlugin' => __DIR__ . '/core/API/endpoints/UninstallPlugin.php',
+  'arte/reinstallPlugin' => __DIR__ . '/core/API/endpoints/ReinstallPlugin.php'
+]);
+
+/**
+ * Loading Plugin Dependencies
+ */
+$plugins = scandir(LOCAL . '/plugins');
+foreach ($plugins as $plugin)
+  if ($plugin != '..' && $plugin != '.' && file_exists(LOCAL . "/plugins/$plugin/autoload.php"))
+    require_once LOCAL . "/plugins/$plugin/autoload.php";

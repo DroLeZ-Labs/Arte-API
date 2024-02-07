@@ -14,7 +14,7 @@ abstract class Endpoint
   protected array $failures = [];
 
   /**
-   * The `init` function initializes the properties of an object and performs validation on the request
+   * The `init` function initializes the properties of an endpoint including prehandles
    * parameters.
    * 
    * @param array expect An array containing the expected parameters for the request.
@@ -37,6 +37,7 @@ abstract class Endpoint
         return new Response("Invalid parameter: $invalid", 400);
 
       $this->request = $this->validator->getFiltered();
+      return null;
     };
   }
 
@@ -103,13 +104,6 @@ abstract class Endpoint
   public function expects($param): bool
   {
     return isset($this->request[$param]);
-  }
-
-  /**
-   * Method executed after the main handling process
-   */
-  public function postHandle(): void
-  {
   }
 
   public function test(): Response
