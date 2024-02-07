@@ -2,6 +2,8 @@
 
 require_once "core/config.php";
 require_once "config.php";
+require_once "core/proxy/Logger.php";
+require_once "core/proxy/Response.php";
 
 require LOCAL . '/vendor/autoload.php';
 

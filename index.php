@@ -4,9 +4,6 @@ ob_start();
 
 require "autoload.php";
 
-require "core/proxy/Logger.php";
-require "core/proxy/Response.php";
-
 // Initialize the logger
 $logger = Logger::getLogger();
 
