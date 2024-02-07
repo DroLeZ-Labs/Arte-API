@@ -1,5 +1,7 @@
 <?php
 
+// Make sure to update variables in this file carefully in order not to cause unexpected behaviors
+
 const API_BASE = "Arte-API";
 
 // DB Mode
@@ -13,7 +15,7 @@ const DBNAME = "testdb";
 const USERNAME = "root";
 const PASSWORD = "";
 // (Sqlite)
-const DB_PATH = LOCAL . "/core/database/db.db";
+const DB_PATH = __DIR__ . "/core/database/db.db";
 
 // Default Timezone
 const TIMEZONE = 'Africa/Cairo';

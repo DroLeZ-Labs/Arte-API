@@ -56,3 +56,40 @@ function isAssoc(array $array)
 {
   return array_keys($array) !== range(0, count($array) - 1);
 }
+
+function deleteDirectory(string $dir)
+{
+  if (!is_dir($dir)) {
+    return false;
+  }
+
+  $files = array_diff(scandir($dir), array('.', '..'));
+
+  foreach ($files as $file) {
+    $path = $dir . '/' . $file;
+
+    if (is_dir($path)) {
+      deleteDirectory($path);
+    } else {
+      unlink($path);
+    }
+  }
+
+  return rmdir($dir);
+}
+
+function chmodRecursive($dir, $permission)
+{
+  if (!file_exists($dir)) {
+    return;
+  }
+
+  $iterator = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS),
+    RecursiveIteratorIterator::SELF_FIRST
+  );
+
+  foreach ($iterator as $item) {
+    chmod($item, $permission);
+  }
+}

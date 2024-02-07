@@ -5,15 +5,17 @@ class InstallPlugin extends RootOnly
   public function __construct()
   {
     $this->init([
-      'name' => [true, Regex::generic(1, 200)]
+      'name' => [true, Regex::separated('/')]
     ], $_POST);
   }
 
   public function handle(): Response
   {
-    $ch = curl_init('https://arte-store.drolez-apps.cloud');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    if(file_exists(PLUGINS_DIR . '/' . str_replace('/', '-', $this->request['name'])))
+      return new Response('Plugin Already Installed', 409);
 
+    $ch = curl_init('https://arte-store.drolez-apps.cloud/plugins/download?name=' . $this->request['name']);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
 
     if ($errno = curl_errno($ch))
@@ -24,9 +26,10 @@ class InstallPlugin extends RootOnly
     // Check for cURL errors
     switch ($httpCode) {
       case 200:
-        $plugin_dir = PLUGINS_DIR . '/' . $this->request['name'];
-        $plugin_zip = $plugin_dir . '/.zip';
+        $plugin_dir = PLUGINS_DIR . '/' . str_replace('/', '-', $this->request['name']);
+        $plugin_zip = $plugin_dir . '.zip';
         file_put_contents($plugin_zip, $response);
+        chmod($plugin_zip, 0777);
         mkdir($plugin_dir);
 
         $zip = new ZipArchive();
@@ -34,6 +37,8 @@ class InstallPlugin extends RootOnly
           // Extract the contents
           $zip->extractTo($plugin_dir);
           $zip->close();
+          chmodRecursive($plugin_dir, 0777);
+          require $plugin_dir . '/autoload.php';
           require $plugin_dir . '/install.php';
           unlink($plugin_zip);
           return new Response;
@@ -45,6 +50,8 @@ class InstallPlugin extends RootOnly
         return new Response('Plugin Not Published On Store', 404);
 
       default:
+        var_dump($httpCode);
+        var_dump($response);
         return new Response("Unexpected Error Occured", 500);
     }
   }

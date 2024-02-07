@@ -18,6 +18,8 @@ abstract class Authenticated extends Endpoint
 
       $this->user = new User($data->id);
       $this->user->setSync(false);
+
+      unset($this->request['Authorization']);
     };
   }
 }

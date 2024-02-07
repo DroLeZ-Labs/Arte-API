@@ -3,12 +3,10 @@
 /**
  * This file needs some work to work well with both mysql and sqlite
  */
-const LOCAL = "../..";
 
-require LOCAL . "/config.php";
-require LOCAL . "/autoload.php";
+require __DIR__ . "/../../autoload.php";
 
-require LOCAL . "/database.php";
+require __DIR__ . "/../../database.php";
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);

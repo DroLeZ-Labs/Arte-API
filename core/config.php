@@ -5,14 +5,12 @@ header('Access-Control-Allow-Origin: *');
 ini_set("precision", 3);
 
 // Locations
-const LOCAL = '.';
+const ENDPOINTS_DIR =  __DIR__ . "/../app/endpoints";
+const ROUTES_JSON = __DIR__ . "/../routes.json";
 
-const ENDPOINTS_DIR =  LOCAL . "/app/endpoints";
-const ROUTES_JSON = LOCAL . '/routes.json';
-
-const PLUGINS_DIR = LOCAL . '/plugins';
-const LOG_DIR =  LOCAL . "/logs";
-const MEDIA_DIR =  LOCAL . "/media";
+const PLUGINS_DIR = __DIR__ . "/../plugins";
+const LOG_DIR =  __DIR__ . "/../logs";
+const MEDIA_DIR =  __DIR__ . "/../media";
 
 if (isset($_REQUEST['debug']))
   define('DEBUG', true);
@@ -29,4 +27,4 @@ if (!function_exists('str_contains')) {
   }
 }
 
-require LOCAL . '/core/functions.php';
+require __DIR__ . "/functions.php";

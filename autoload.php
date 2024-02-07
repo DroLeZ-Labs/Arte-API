@@ -5,26 +5,26 @@ require_once "config.php";
 require_once "core/proxy/Logger.php";
 require_once "core/proxy/Response.php";
 
-require LOCAL . '/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 class Autoloader
 {
-  const ENTITIES_DIR = LOCAL . '/app/model/entities';
-  const MAPPERS_DIR = LOCAL . '/app/model/mappers';
-  const SERVICES_DIR = LOCAL . '/app/model/services';
+  const ENTITIES_DIR = __DIR__ . '/app/model/entities';
+  const MAPPERS_DIR = __DIR__ . '/app/model/mappers';
+  const SERVICES_DIR = __DIR__ . '/app/model/services';
 
-  const SYSTEM_HELPERS_DIR = LOCAL . '/core/helpers';
-  const USER_HELPERS_DIR = LOCAL . '/app/helpers';
+  const SYSTEM_HELPERS_DIR = __DIR__ . '/core/helpers';
+  const USER_HELPERS_DIR = __DIR__ . '/app/helpers';
 
-  const SYSTEM_BASES_DIR = LOCAL . '/core/bases';
-  const USER_BASES_DIR = LOCAL . '/app/bases';
+  const SYSTEM_BASES_DIR = __DIR__ . '/core/bases';
+  const USER_BASES_DIR = __DIR__ . '/app/bases';
 
-  const SYSTEM_EXCEPTIONS_DIR = LOCAL . '/core/exceptions';
-  const USER_EXCEPTIONS_DIR = LOCAL . '/app/exceptions';
+  const SYSTEM_EXCEPTIONS_DIR = __DIR__ . '/core/exceptions';
+  const USER_EXCEPTIONS_DIR = __DIR__ . '/app/exceptions';
 
-  const USER_LIBS_DIR = LOCAL . '/app/lib';
+  const USER_LIBS_DIR = __DIR__ . '/app/lib';
 
-  const DB_DIR = LOCAL . '/core/database';
+  const DB_DIR = __DIR__ . '/core/database';
 
   private static Autoloader $inst;
   private array $dynamic_dependencies = [];
@@ -81,7 +81,7 @@ class Autoloader
   public function push_dependencies(string $plugin, array $dependencies)
   {
     foreach ($dependencies as $dependency => $location)
-      $this->dynamic_dependencies[$dependency] = LOCAL . "/plugins/$plugin/src/$location";
+      $this->dynamic_dependencies[$dependency] = $plugin . "/src/$location";
   }
 }
 
@@ -107,7 +107,7 @@ Router::getInst()->addRoutes([
 /**
  * Loading Plugin Dependencies
  */
-$plugins = scandir(LOCAL . '/plugins');
+$plugins = scandir(__DIR__ . '/plugins');
 foreach ($plugins as $plugin)
-  if ($plugin != '..' && $plugin != '.' && file_exists(LOCAL . "/plugins/$plugin/autoload.php"))
-    require_once LOCAL . "/plugins/$plugin/autoload.php";
+  if ($plugin != '..' && $plugin != '.' && file_exists(__DIR__ . "/plugins/$plugin/autoload.php"))
+    require_once __DIR__ . "/plugins/$plugin/autoload.php";

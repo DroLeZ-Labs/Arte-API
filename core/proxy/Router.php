@@ -25,7 +25,7 @@ class Router
 
     $this->route->uri = explode('?', ltrim(parse_url($requestUri, PHP_URL_PATH), '/'))[0];
     $this->route->test = (strpos($this->route->uri, 'test/') === 0);
-    $this->route->uri = preg_replace('/^test\//', '', $this->route->uri);
+    $this->route->uri = trim(preg_replace('/^test\//', '', $this->route->uri), '/');
 
     $this->routes = json_decode(file_get_contents(ROUTES_JSON), true);
   }

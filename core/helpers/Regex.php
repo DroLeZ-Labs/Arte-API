@@ -68,10 +68,12 @@ class Regex
    * @param string $delimiter The delimiter
    * @return string The regular expression pattern
    */
-  public static function separated(string $delimiter): string
+  public static function separated(string $delimiter, string $pattern = "[\p{Arabic}\w\-\\\)\(.,:\s+]"): string
   {
-    return '/^' . self::GENERIC . '+(' . $delimiter . self::GENERIC . '+)+$/u';
+    $escapedDelimiter = preg_quote($delimiter, '/');
+    return "/^$pattern+($escapedDelimiter$pattern+)+$/u";
   }
+
 
   public static function generate(string $regex): string
   {
