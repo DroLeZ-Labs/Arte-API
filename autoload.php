@@ -43,7 +43,7 @@ class Autoloader
 
   public function load(string $classname)
   {
-    if (isset($this->dynamic_dependencies[$classname]))
+    if (isset($this->dynamic_dependencies[$classname]) && file_exists($this->dynamic_dependencies[$classname]))
       require $this->dynamic_dependencies[$classname];
 
     else if (file_exists(self::DB_DIR . "/$classname.php"))
@@ -78,10 +78,10 @@ class Autoloader
   /**
    * @param array associative array associates every class with its definition location
    */
-  public function push_dependencies(string $plugin, array $dependencies)
+  public function push_dependencies(array $dependencies, string $base = __DIR__)
   {
     foreach ($dependencies as $dependency => $location)
-      $this->dynamic_dependencies[$dependency] = $plugin . "/src/$location";
+      $this->dynamic_dependencies[$dependency] = "$base/$location";
   }
 }
 

@@ -71,7 +71,7 @@ class Regex
   public static function separated(string $delimiter, string $pattern = "[\p{Arabic}\w\-\\\)\(.,:\s+]"): string
   {
     $escapedDelimiter = preg_quote($delimiter, '/');
-    return "/^$pattern+($escapedDelimiter$pattern+)+$/u";
+    return "/^$pattern+($escapedDelimiter$pattern+)*$/u";
   }
 
 

@@ -18,7 +18,7 @@ else {
       $response = $route->endpoint->test();
     else
       $response = $route->endpoint->run();
-  } catch (Exception $e) {
+  } catch (Exception | Error $e) {
     $code = is_integer($e->getCode()) ? $e->getCode() : 500;
     $response = new Response(trace($e), $code);
   }
