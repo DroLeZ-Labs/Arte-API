@@ -8,12 +8,19 @@ Header set Access-Control-Allow-Methods "GET, POST"
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 
-# Administrative Tools
-RewriteRule ^files$ core/files.php [NC,end]
-RewriteRule ^shell$ core/shell.php [NC,end]
-RewriteRule ^db-script$ core/database/DBScript.php$1 [NC,end]
-RewriteRule ^db$ core/database/phpliteadmin.php [NC,end]
+# Change to true in order to force disable administrative tools access and debug mode
+SetEnv prod false
+
+# Administrative Tools (conditionally disabled)
+RewriteCond %{ENV:prod} true
+RewriteRule ^files$ - [F,L]
+RewriteCond %{ENV:prod} true
+RewriteRule ^shell$ - [F,L]
+RewriteCond %{ENV:prod} true
+RewriteRule ^db-script$ - [F,L]
+RewriteCond %{ENV:prod} true
+RewriteRule ^db$ - [F,L]
 
 # API Request Routing
 # example controller/endpoint?params
-RewriteRule (.+)$ index.php [NC,end]
+RewriteRule (.+)$ index.php [NC,L]

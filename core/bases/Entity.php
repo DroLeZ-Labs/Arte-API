@@ -6,7 +6,7 @@
  * Represents an entity in the system.
  */
 
-abstract class Entity implements JsonSerializable
+abstract class Entity implements JsonSerializable, ArrayAccess
 {
   protected ?Mapper $mapper = null; // mapper instance
   protected bool $synced = false; // db synchronization flag
@@ -54,7 +54,7 @@ abstract class Entity implements JsonSerializable
    */
   public function load(array $data): void
   {
-    foreach ($data as $property => $value) {      
+    foreach ($data as $property => $value) {
       if (property_exists($this, $property))
         $this->set($property, $value);
     }
@@ -271,5 +271,26 @@ abstract class Entity implements JsonSerializable
   public function jsonSerialize(): mixed
   {
     return $this->getData();
+  }
+
+  // ArrayAccess
+  public function offsetExists(mixed $offset): bool
+  {
+    return property_exists($this, $offset) && !isset($this->ids[$offset]);
+  }
+
+  public function offsetGet($offset): mixed
+  {
+    return $this->get($offset);
+  }
+
+  public function offsetSet($offset, $value): void
+  {
+    $this->set($offset, $value);
+  }
+
+  public function offsetUnset($offset): void
+  {
+    $this->set($offset, null);
   }
 }

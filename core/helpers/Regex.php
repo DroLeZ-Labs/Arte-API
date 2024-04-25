@@ -67,11 +67,12 @@ class Regex
    *
    * @param string $delimiter The delimiter
    * @return string The regular expression pattern
+   * @note that it allows empty strings to pass
    */
-  public static function separated(string $delimiter, string $pattern = "[\p{Arabic}\w\-\\\)\(.,:\s+]"): string
+  public static function separated(string $delimiter, string $pattern = "[\p{Arabic}\w\-\\\)\(.,:\s+]+"): string
   {
     $escapedDelimiter = preg_quote($delimiter, '/');
-    return "/^$pattern+($escapedDelimiter$pattern+)*$/u";
+    return "/^($pattern|$escapedDelimiter)*($pattern)?$|^$/u";
   }
 
 
@@ -173,20 +174,18 @@ class Regex
 
   public static function generateID(string $table, $existing = true): string
   {
-    if (!isset(static::$tables_IDs[$table]))
-      static::$tables_IDs[$table] = array_column(DB::getDB()->select('id', $table, ['id > 0']), 'id');
-
     if ($existing) { // Returning an existing ID
-      if (!empty(static::$tables_IDs[$table]))
-        return static::$tables_IDs[$table][array_rand(static::$tables_IDs[$table], 1)];
+      $record = DB::getDB()->select('id', $table, ['id > 0', 'ORDER BY RAND() LIMIT 1']);
+      if(!empty($record))
+        return $record[0]['id'];
       else
         throw new Exception("Table $table is empty, so the generator failed to find an existing id");
     } else { // returning a non-existing ID
-      $not_found_id = -1;
-      while (in_array($not_found_id, static::$tables_IDs[$table])) // try another one
-        $not_found_id = random_int(0, 1000000);
+      $temp_id = -1;
+      while ($temp_id == -1 || !empty($record = DB::getDB()->select('id', $table, ['id' => $temp_id]))) // try another one
+        $temp_id = random_int(0, PHP_INT_MAX);
 
-      return $not_found_id;
+      return $temp_id;
     }
   }
 }

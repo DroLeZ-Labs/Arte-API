@@ -24,11 +24,21 @@ else {
   }
 }
 
-// Output the response
-$response->echo();
+if(!DEBUG){
+  // Output the response
+  $response->echo();
 
-// Perform post-handle actions on the endpoint
-PostHandle::run();
+  // Perform post-handle actions on the endpoint
+  PostHandle::run();
+}
+
+else {
+  // Perform post-handle actions on the endpoint
+  PostHandle::run();
+
+  // Output the response
+  $response->echo();
+}
 
 // Log the request and response
 $logger->log($route, $response);

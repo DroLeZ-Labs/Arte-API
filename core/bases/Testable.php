@@ -28,7 +28,7 @@ class Scenario
     $this->assertions = $assertions;
   }
 
-  public function generateInput()
+  public function generateInput(): array
   {
     return call_user_func($this->inputGenerator);
   }

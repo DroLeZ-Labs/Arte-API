@@ -1,6 +1,6 @@
 <?php
 
-$creations = [
+return [
   'users' => [
     'id INT AUTO_INCREMENT PRIMARY KEY',
     'username VARCHAR(255) UNIQUE NOT NULL',
@@ -10,9 +10,3 @@ $creations = [
     'FOREIGN KEY (friend) REFERENCES users(id)'
   ]
 ];
-
-
-/**
- * @var array<string,array>
- */
-$insertions = [];

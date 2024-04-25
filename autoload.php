@@ -1,9 +1,9 @@
 <?php
 
-require_once "core/config.php";
-require_once "config.php";
-require_once "core/proxy/Logger.php";
-require_once "core/proxy/Response.php";
+require_once __DIR__ . "/core/config.php";
+require_once __DIR__ . "/config.php";
+require_once __DIR__ . "/core/proxy/Logger.php";
+require_once __DIR__ . "/core/proxy/Response.php";
 
 require __DIR__ . '/vendor/autoload.php';
 

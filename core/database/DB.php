@@ -12,11 +12,11 @@ class DB
 	public function __construct()
 	{
 		if (DB_MODE == SQLITE) {
-			$this->db = new PDO('sqlite:' . DB_PATH);
+			$this->db = new PDO('sqlite:' . $_ENV['DB_PATH']);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			$this->db->exec('PRAGMA foreign_keys = ON;');
 		} else if (DB_MODE == MYSQL) {
-			$this->db = new PDO("mysql:host=" . HOST . ";dbname=" . DBNAME, USERNAME, PASSWORD);
+			$this->db = new PDO("mysql:host=" . $_ENV['DB_HOST'] . ";dbname=" . $_ENV['DB_NAME'], $_ENV['DB_USER'], $_ENV['DB_PASS']);
 			$this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		} else
 			throw new PDOException("Bad Configuration", 11);

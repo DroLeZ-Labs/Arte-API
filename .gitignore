@@ -9,3 +9,6 @@
 
 # Ignore all .err files in all subdirectories
 **/*.err
+
+# Environment Variables
+.env

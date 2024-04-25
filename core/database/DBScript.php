@@ -1,12 +1,9 @@
 <?php
 
-/**
- * This file needs some work to work well with both mysql and sqlite
- */
-
 require __DIR__ . "/../../autoload.php";
 
-require __DIR__ . "/../../database.php";
+$creations = require "creations.php";
+$insertions = require "insertions.php";
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
