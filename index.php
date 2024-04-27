@@ -5,9 +5,9 @@ ob_start();
 require "autoload.php";
 
 // Initialize the logger
-$logger = Logger::getLogger();
+$logger = ArteLogger::getLogger();
 
-$router = Router::getInst();
+$router = ArteRouter::getInst();
 $route = $router->route();
 
 if (!isset($route->endpoint))

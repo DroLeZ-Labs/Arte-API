@@ -6,9 +6,9 @@ class User extends Entity {
   protected string $password;
   protected ?User $friend;
 
-  protected static array $protected = ['password'];
+  public static array $protected = ['password'];
 
-  protected static array $foreigns = [
+  public static array $foreigns = [
     'friend' => 'User'
   ];
 }

@@ -1,5 +1,13 @@
 <?php
 
+if (!function_exists('str_contains')) {
+  function str_contains(string $haystack, string $needle): bool
+  {
+    return '' === $needle || false !== strpos($haystack, $needle);
+  }
+}
+
+
 function isJson($payload)
 {
   if (!is_string($payload))
@@ -92,4 +100,10 @@ function chmodRecursive($dir, $permission)
   foreach ($iterator as $item) {
     chmod($item, $permission);
   }
+}
+
+function prettyPrint(array $arr) {
+  echo '<pre>';
+  print_r($arr);
+  echo '</pre>';
 }

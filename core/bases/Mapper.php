@@ -8,8 +8,9 @@
  */
 abstract class Mapper
 {
-  protected static string $entity_type;
+  public static string $entity_type;
   protected Entity $entity;
+  public static string $table = "";
   public static array $required = [];
   public static array $optional = [];
 
@@ -40,7 +41,6 @@ abstract class Mapper
      */
     return array_merge(['id'], static::$required, static::$optional);
   }
-
 
   /**
    * Function makes the data ready for insertion
@@ -118,7 +118,7 @@ abstract class Mapper
     if ($this->entity->inSync())
       return true;
 
-    if ($result = $db->update(static::$table, $this->entity->getChanges(), $this->entity->getID())){
+    if ($result = $db->update(static::$table, $this->entity->getChanges(), $this->entity->getID())) {
       $this->entity->setSync(true);
       $this->entity->resetChanges();
     }
@@ -134,9 +134,9 @@ abstract class Mapper
    */
   public static function get($filters = []): ?Entity
   {
-    if(is_numeric($filters))
+    if (is_numeric($filters))
       $filters = ['id' => $filters];
-    else if(!is_array($filters))
+    else if (!is_array($filters))
       throw new InvalidArguments("Filters must be either numeric or array");
 
     self::preProcessStatic();
@@ -170,18 +170,13 @@ abstract class Mapper
     );
   }
 
-  public static function validateFilters(array &$filters)
+  public static function validateFilters(array &$filters, bool $neglect = false)
   {
     self::preProcessStatic();
 
     foreach ($filters as $key => $value)
-      if (!in_array($key, static::$required) && !in_array($key, static::$optional) && !is_numeric($key) && $key != 'id')
+      if (!$neglect && !in_array($key, static::$required) && !in_array($key, static::$optional) && !is_numeric($key) && $key != 'id')
         throw new InvalidArguments("Invalid Filter Key $key for entity of type " . static::$entity_type);
-
-    if (count($filters))
-      array_push($filters, ' and ');
-
-    array_push($filters, 'id > 0');
   }
 
   /**

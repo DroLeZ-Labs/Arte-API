@@ -12,8 +12,8 @@ abstract class Entity implements JsonSerializable, ArrayAccess
   protected bool $synced = false; // db synchronization flag
   protected array $ids = ['id' => null]; // entity IDs
   protected array $changes = []; // changes
-  protected static array $foreigns = []; // array of foreign keys mappings
-  protected static array $protected = []; // array of elements that are fetch-protected
+  public static array $foreigns = []; // array of foreign keys mappings
+  public static array $protected = []; // array of elements that are fetch-protected
 
   /**
    * Copy properties from another entity.

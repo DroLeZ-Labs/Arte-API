@@ -8,19 +8,6 @@ Header set Access-Control-Allow-Methods "GET, POST"
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 
-# Change to true in order to force disable administrative tools access and debug mode
-SetEnv prod false
-
-# Administrative Tools (conditionally disabled)
-RewriteCond %{ENV:prod} true
-RewriteRule ^files$ - [F,L]
-RewriteCond %{ENV:prod} true
-RewriteRule ^shell$ - [F,L]
-RewriteCond %{ENV:prod} true
-RewriteRule ^db-script$ - [F,L]
-RewriteCond %{ENV:prod} true
-RewriteRule ^db$ - [F,L]
-
 # API Request Routing
 # example controller/endpoint?params
 RewriteRule (.+)$ index.php [NC,L]

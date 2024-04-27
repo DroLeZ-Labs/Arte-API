@@ -14,7 +14,7 @@ class Authenticator
   {
     try {
       return JWT::decode($cypher, new Key($_ENV['JWT_SECRET'], 'HS256'));
-    } catch (DomainException $e) {
+    } catch (Exception $e) {
       return false;
     }
   }

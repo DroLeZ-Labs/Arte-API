@@ -1,16 +1,16 @@
 <?php
 
-class Router
+class ArteRouter
 {
-  private static Router $inst;
+  private static ArteRouter $inst;
 
   private Route $route;
   private array $routes;
 
-  public static function getInst(): Router
+  public static function getInst(): ArteRouter
   {
     if (!isset(static::$inst))
-      static::$inst = new Router;
+      static::$inst = new ArteRouter;
 
     return static::$inst;
   }
@@ -85,3 +85,12 @@ class Route
   public Endpoint $endpoint;
   public bool $test = false;
 }
+
+/**
+ * Arte Core Routes
+ */
+ArteRouter::getInst()->addRoutes([
+  'arte/installPlugin' => __DIR__ . '/core/API/endpoints/InstallPlugin.php',
+  'arte/uninstallPlugin' => __DIR__ . '/core/API/endpoints/UninstallPlugin.php',
+  'arte/reinstallPlugin' => __DIR__ . '/core/API/endpoints/ReinstallPlugin.php'
+]);

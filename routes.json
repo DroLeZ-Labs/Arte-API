@@ -8,5 +8,12 @@
   "generateToken": "GenerateToken.php",
 
   "files/zip": "files/Zip.php",
-  "files/mp4": "files/Mp4.php"
+  "files/mp4": "files/Mp4.php",
+
+  "rooms/create": "rooms/Create.php",
+  "rooms": "rooms/GetAll.php",
+  "rooms/delete": "rooms/Delete.php",
+  "rooms/{room_id}": "rooms/Info.php",
+  "rooms/{room_id}/users": "rooms/GetUsers.php",
+  "rooms/{room_id}/connect": "rooms/AddUser.php"
 }

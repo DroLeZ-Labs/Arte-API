@@ -3,14 +3,14 @@
 /**
  * The Logger class handles logging and error reporting.
  */
-class Logger
+class ArteLogger
 {
   /**
    * @var string The log file path.
    */
   private static string $log_file;
   private array $logs;
-  private static Logger $inst;
+  private static ArteLogger $inst;
 
   /**
    * @var Ndate The current date.
@@ -38,7 +38,7 @@ class Logger
       $this->logs = [];
   }
 
-  public static function getLogger(): Logger
+  public static function getLogger(): ArteLogger
   {
     if (!isset(self::$inst))
       self::$inst = new self();

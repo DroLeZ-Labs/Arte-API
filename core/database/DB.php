@@ -8,6 +8,7 @@ class DB
 
 	private static $instance;
 	protected $db;
+	private static array $joins;
 
 	public function __construct()
 	{
@@ -28,6 +29,14 @@ class DB
 			self::$instance = new self();
 
 		return self::$instance;
+	}
+
+	private static function getJoins(): array
+	{
+		if (!isset(self::$joins))
+			self::$joins = json_decode(file_get_contents(__DIR__ . '/joins.json'), true);
+
+		return self::$joins;
 	}
 
 	private static function joinToString(array $array, string $conjunction, string $relation)
@@ -139,8 +148,7 @@ class DB
 			foreach ($conflicts as &$conflict)
 				$conflict = explode('.', $conflict)[1];
 			$conflicts = implode(', ', $conflicts);
-		}
-		else {
+		} else {
 			preg_match("/for key '(.*?)'/", $err, $matches);
 			return $matches[1];
 		}

@@ -1,13 +1,11 @@
 <?php
 
-require __DIR__ . "/../../autoload.php";
-
-$creations = require "creations.php";
-$insertions = require "insertions.php";
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+$creations = require APP_DIR . "/model/database/creations.php";
+$insertions = require APP_DIR . "/model/database/insertions.php";
 
 $db = DB::getDB();
 
@@ -42,6 +40,27 @@ foreach ($creations as $tablename => $columns) {
     $failures++;
 }
 
+// Updating table join map
+$refs = DB::getDB()->select('TABLE_NAME, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME', 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE', ['TABLE_SCHEMA' => $_ENV['DB_NAME'], ' AND REFERENCED_TABLE_NAME IS NOT NULL']);
+
+$joins = [];
+foreach ($refs as $ref) {
+  $table1 = $ref['TABLE_NAME'];
+  $column1 = $ref['COLUMN_NAME'];
+  $table2 = $ref['REFERENCED_TABLE_NAME'];
+  $column2 = $ref['REFERENCED_COLUMN_NAME'];
+
+  if (!isset($joins[$table1]))
+    $joins[$table1] = [];
+  if (!isset($joins[$table2]))
+    $joins[$table2] = [];
+
+  $joins[$table1][$table2] = "$table1.$column1 = $table2.$column2";
+  $joins[$table2][$table1] = "$table1.$column1 = $table2.$column2";
+}
+
+file_put_contents(APP_DIR . "/joins.json", json_encode($joins));
+
 echo "<br>$successes Successes and $failures Failures<br>";
 
 // Inserting
@@ -55,8 +74,8 @@ foreach ($insertions as $table => $table_insertions) {
       $successes++;
       continue;
     }
-    
-    if($db->insert($table, $insertion))
+
+    if ($db->insert($table, $insertion))
       $successes++;
     else
       $failures++;
