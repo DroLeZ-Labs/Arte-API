@@ -59,7 +59,7 @@ foreach ($refs as $ref) {
   $joins[$table2][$table1] = "$table1.$column1 = $table2.$column2";
 }
 
-file_put_contents(APP_DIR . "/joins.json", json_encode($joins));
+file_put_contents(APP_DIR . "/database/joins.json", json_encode($joins));
 
 echo "<br>$successes Successes and $failures Failures<br>";
 

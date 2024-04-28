@@ -1,1 +1,0 @@
-{"connections":{"users":"connections.user_id = users.id","rooms":"connections.room_id = rooms.id"},"users":{"connections":"connections.user_id = users.id","users":"users.friend = users.id"},"rooms":{"connections":"connections.room_id = rooms.id"}}

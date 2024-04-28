@@ -25,16 +25,16 @@ else
 /**
  * Loading Plugin Dependencies
  */
-$plugins = scandir(__DIR__ . '/plugins');
+$plugins = scandir(PLUGINS_DIR);
 foreach ($plugins as $plugin)
-  if ($plugin != '..' && $plugin != '.' && file_exists(__DIR__ . "/plugins/$plugin/autoload.php"))
-    require_once __DIR__ . "/plugins/$plugin/autoload.php";
+  if ($plugin != '..' && $plugin != '.' && file_exists(PLUGINS_DIR . "/$plugin/autoload.php"))
+    require_once PLUGINS_DIR . "/$plugin/autoload.php";
 
 /**
  * Routing to dev tools
  */
 if (!$prod) {
-  $requested = trim(explode(API_BASE, parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))[1], '/');
+  $requested = trim(explode(API_BASE, parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH))[1] ?? '', '/');
   if ($requested == 'db') {
     require CORE_DIR . "/database/phpliteadmin.php";
     exit;

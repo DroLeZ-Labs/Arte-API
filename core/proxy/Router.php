@@ -90,7 +90,8 @@ class Route
  * Arte Core Routes
  */
 ArteRouter::getInst()->addRoutes([
-  'arte/installPlugin' => __DIR__ . '/core/API/endpoints/InstallPlugin.php',
-  'arte/uninstallPlugin' => __DIR__ . '/core/API/endpoints/UninstallPlugin.php',
-  'arte/reinstallPlugin' => __DIR__ . '/core/API/endpoints/ReinstallPlugin.php'
+  'arte/installPlugin' => CORE_DIR . '/API/endpoints/InstallPlugin.php',
+  'arte/uninstallPlugin' => CORE_DIR . '/API/endpoints/UninstallPlugin.php',
+  'arte/reinstallPlugin' => CORE_DIR . '/API/endpoints/ReinstallPlugin.php',
+  'arte/update' => CORE_DIR . '/API/endpoints/UpdateArte.php'
 ]);

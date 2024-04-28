@@ -118,7 +118,7 @@ class CustomMapper
   public function validateFilters(array &$filters)
   {
     $result = [];
-    foreach ($this->mappers as $mapper) {
+    foreach ($this->mappers as $mapper)   {
       $temp = $filters;
       $mapper::validateFilters($temp, true);
       $results = array_merge($result, $temp);

@@ -50,8 +50,6 @@ class InstallPlugin extends RootOnly
         return new Response('Plugin Not Published On Store', 404);
 
       default:
-        var_dump($httpCode);
-        var_dump($response);
         return new Response("Unexpected Error Occured", 500);
     }
   }
