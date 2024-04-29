@@ -48,6 +48,7 @@ class CustomMapper
       
       return;
     }
+    else throw new JoinImpossible($table1, $which::$table);
   }
 
   private function getTable(): string
@@ -121,7 +122,7 @@ class CustomMapper
     foreach ($this->mappers as $mapper)   {
       $temp = $filters;
       $mapper::validateFilters($temp, true);
-      $results = array_merge($result, $temp);
+      $result = array_merge($result, $temp);
     }
 
     return array_unique($result);
