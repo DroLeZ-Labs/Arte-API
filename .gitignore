@@ -12,3 +12,5 @@
 
 # Environment Variables
 .env
+
+core/scripts/*.zip

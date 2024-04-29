@@ -102,8 +102,76 @@ function chmodRecursive($dir, $permission)
   }
 }
 
-function prettyPrint(array $arr) {
+function prettyPrint(array $arr)
+{
   echo '<pre>';
   print_r($arr);
   echo '</pre>';
+}
+
+function copyDirectory($source, $destination)
+{
+  // Create the destination directory if it doesn't exist
+  if (!is_dir($destination)) {
+    mkdir($destination, 0777, true);
+  }
+
+  // Open the source directory
+  $dir = opendir($source);
+
+  // Loop through all files and subdirectories in the source directory
+  while (false !== ($file = readdir($dir))) {
+    if ($file == '.' || $file == '..' || $file == 'scripts') {
+      continue; // Skip current and parent directory entries
+    }
+
+    $sourcePath = $source . '/' . $file;
+    $destinationPath = $destination . '/' . $file;
+
+    if (is_dir($sourcePath)) {
+      // If the current item is a directory, recursively copy it
+      copyDirectory($sourcePath, $destinationPath);
+    } else {
+      // If it's a file, copy it to the destination
+      copy($sourcePath, $destinationPath);
+    }
+  }
+
+  // Close the source directory
+  closedir($dir);
+}
+
+function zipDirectory($source, $destination)
+{
+  // Initialize ZipArchive object
+  $zip = new ZipArchive();
+
+  // Open or create the zip file
+  if ($zip->open($destination, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== TRUE) {
+    return false;
+  }
+
+  // Create recursive directory iterator
+  $files = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($source),
+    RecursiveIteratorIterator::LEAVES_ONLY
+  );
+
+  // Loop through each file and add it to the zip archive
+  foreach ($files as $name => $file) {
+    // Skip directories (they will be added automatically)
+    if (!$file->isDir()) {
+      // Get the relative path of the file
+      $filePath = $file->getRealPath();
+      $relativePath = substr($filePath, strlen($source) + 1);
+
+      // Add the file to the zip archive
+      $zip->addFile($filePath, $relativePath);
+    }
+  }
+
+  // Close the zip archive
+  $zip->close();
+
+  return true;
 }
