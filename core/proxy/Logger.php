@@ -36,6 +36,10 @@ class ArteLogger
       $this->logs = json_decode(file_get_contents(self::$log_file), true) ?? [];
     else
       $this->logs = [];
+
+    if (!$fhand = fopen(self::$log_file, "w"))
+      throw new PermissionDenied(self::$log_file);
+    else fclose($fhand);
   }
 
   public static function getLogger(): ArteLogger

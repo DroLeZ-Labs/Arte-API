@@ -4,8 +4,12 @@ ob_start();
 
 require "autoload.php";
 
-// Initialize the logger
-$logger = ArteLogger::getLogger();
+try {
+  // Initialize the logger
+  $logger = ArteLogger::getLogger();
+} catch (PermissionDenied $e) {
+  die('Fix project permissions');
+}
 
 $router = ArteRouter::getInst();
 $route = $router->route();
@@ -24,15 +28,13 @@ else {
   }
 }
 
-if(!DEBUG){
+if (!DEBUG) {
   // Output the response
   $response->echo();
 
   // Perform post-handle actions on the endpoint
   PostHandle::run();
-}
-
-else {
+} else {
   // Perform post-handle actions on the endpoint
   PostHandle::run();
 
