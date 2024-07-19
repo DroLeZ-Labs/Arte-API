@@ -24,21 +24,13 @@ abstract class Endpoint
    * variable is not empty. The Response object is created with the message "Invalid parameter: "
    * and a status code of 400.
    */
-  protected function init(array $expect, array $request): void
+  public function init(array $expect, array $request): void
   {
     $this->expect = $expect;
     $this->start_time = floor(microtime(true) * 1000);
     $this->request = [...$this->request, ...$request];
     $this->validator = new Validator($expect, static::class);
     $this->duration = 0;
-
-    $this->prehandles[] = function () {
-      if ($invalid = $this->validator->validate($this->request))
-        return new Response("Invalid parameter: $invalid", 400);
-
-      $this->request = $this->validator->getFiltered();
-      return null;
-    };
   }
 
   /**
@@ -77,9 +69,14 @@ abstract class Endpoint
    */
   public function run(): Response
   {
+    // Validation
+    if ($invalid = $this->validator->validate($this->request))
+      return new Response("Invalid parameter: $invalid", 400);
+    $this->request = $this->validator->getFiltered();
+
+    // Handlers
     if ($response = $this->prehandle())
       return $response;
-
     $response = $this->handle();
 
     $this->duration = floor(microtime(true) * 1000) - $this->start_time;

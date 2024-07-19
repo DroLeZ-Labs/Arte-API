@@ -9,7 +9,7 @@
 abstract class Entity implements JsonSerializable, ArrayAccess
 {
   protected ?Mapper $mapper = null; // mapper instance
-  protected bool $synced = false; // db synchronization flag
+  protected bool $loaded = false; // db synchronization flag
   protected array $ids = ['id' => null]; // entity IDs
   protected array $changes = []; // changes
   public static array $foreigns = []; // array of foreign keys mappings
@@ -30,7 +30,7 @@ abstract class Entity implements JsonSerializable, ArrayAccess
     // Copy each field from the source entity to the current entity
     $fields = get_object_vars($entity);
     foreach ($fields as $field => $value) {
-      if (in_array($field, ['mapper', 'synced', 'ids', 'changes']))
+      if (in_array($field, ['mapper', 'loaded', 'ids', 'changes']))
         continue;
 
       $this->{$field} = $entity->naiveGet($field);
@@ -55,9 +55,11 @@ abstract class Entity implements JsonSerializable, ArrayAccess
   public function load(array $data): void
   {
     foreach ($data as $property => $value) {
-      if (property_exists($this, $property))
+      if (property_exists($this, $property) || isset(static::$foreigns[$property]))
         $this->set($property, $value);
     }
+
+    $this->resetChanges();
   }
 
   /**
@@ -132,12 +134,13 @@ abstract class Entity implements JsonSerializable, ArrayAccess
       if (in_array($property, $this::$protected))
         continue;
 
-      if ($this->naiveGet($property) === null && !$this->inSync()) {
+      if ($this->naiveGet($property) === null && !$this->loaded) {
         if (!$entity = $this->getMapper()->get($this->getID()))
           echo "Couldn't find entity in db";
 
         $this->copy($entity);
-        $this->setSync(true);
+        $this->setLoaded(true);
+        $this->loaded = true;
       }
 
       $result[$property] = $this->naiveGet($property);
@@ -165,7 +168,7 @@ abstract class Entity implements JsonSerializable, ArrayAccess
    */
   public function set(string $property, $value): void
   {
-    if (!property_exists($this, $property))
+    if (!property_exists($this, $property) && !isset($this::$foreigns[$property]))
       throw new PropertyNotExisting($property, static::class);
 
     if (is_float($value))
@@ -178,8 +181,12 @@ abstract class Entity implements JsonSerializable, ArrayAccess
       $value = json_decode($value, true);
 
     // Foreign Linking
-    if (isset($this::$foreigns[$property]) && is_numeric($value))
-      $value = new $this::$foreigns[$property]($value);
+    if (isset($this::$foreigns[$property]) && is_numeric($value)) {
+      $temp = $property;
+      $property = $this::$foreigns[$temp][0];
+      $type = $this::$foreigns[$temp][1];
+      $value = new $type($value);
+    }
 
     // Value has changed
     if (!isset($this->{$property}) || $this->{$property} != $value) {
@@ -187,7 +194,6 @@ abstract class Entity implements JsonSerializable, ArrayAccess
 
       // If persistence layer is concerned with the changed value
       if (in_array($property, $this->getMapper()::$required) || in_array($property, $this->getMapper()::$optional)) {
-        $this->setSync(false);
         $this->changes[$property] = $value instanceof Entity ? $value->get('id') : $value;
       }
     }
@@ -218,24 +224,25 @@ abstract class Entity implements JsonSerializable, ArrayAccess
   }
 
   /**
-   * Check if the entity is in sync with the persistence layer.
+   * Set the loaded state of the entity.
    *
-   * @return bool True if the entity is in sync, false otherwise.
+   * @param bool $state The loaded state to be set.
    */
-  public function inSync(): bool
+  public function setLoaded(bool $state): void
   {
-    return $this->synced;
+    $this->loaded = $state;
   }
 
   /**
-   * Set the sync state of the entity.
+   * Set the loaded state of the entity.
    *
-   * @param bool $state The sync state to be set.
+   * @param bool $state The loaded state to be set.
    */
-  public function setSync(bool $state): void
+  public function isLoaded(): bool
   {
-    $this->synced = $state;
+    return $this->loaded;
   }
+
 
   // Mapper methods
   public function delete(): bool
@@ -294,3 +301,4 @@ abstract class Entity implements JsonSerializable, ArrayAccess
     $this->set($offset, null);
   }
 }
+  

@@ -12,6 +12,25 @@ const PLUGINS_DIR = ROOT_DIR . "/plugins";
 const LOG_DIR =  ROOT_DIR . "/logs";
 const MEDIA_DIR =  ROOT_DIR . "/media";
 
+const ENTITIES_DIR = APP_DIR . '/model/entities';
+const MAPPERS_DIR = APP_DIR . '/model/mappers';
+const SERVICES_DIR = APP_DIR . '/model/services';
+
+const SYSTEM_HELPERS_DIR = CORE_DIR . '/helpers';
+const USER_HELPERS_DIR = APP_DIR . '/helpers';
+
+const SYSTEM_SERVICES_DIR = CORE_DIR . '/services';
+
+const SYSTEM_BASES_DIR = CORE_DIR . '/bases';
+const USER_BASES_DIR = APP_DIR . '/bases';
+
+const SYSTEM_EXCEPTIONS_DIR = CORE_DIR . '/exceptions';
+const USER_EXCEPTIONS_DIR = APP_DIR . '/exceptions';
+
+const USER_LIBS_DIR = APP_DIR . '/lib';
+
+const DB_CORE = CORE_DIR . '/database';
+
 require_once ROOT_DIR . "/config.php";
 
 require_once CORE_DIR . "/init.php";
@@ -25,23 +44,6 @@ require_once CORE_DIR . "/functions.php";
 
 class ArteAutoloader
 {
-  const ENTITIES_DIR = APP_DIR . '/model/entities';
-  const MAPPERS_DIR = APP_DIR . '/model/mappers';
-  const SERVICES_DIR = APP_DIR . '/model/services';
-
-  const SYSTEM_HELPERS_DIR = CORE_DIR . '/helpers';
-  const USER_HELPERS_DIR = APP_DIR . '/helpers';
-
-  const SYSTEM_BASES_DIR = CORE_DIR . '/bases';
-  const USER_BASES_DIR = APP_DIR . '/bases';
-
-  const SYSTEM_EXCEPTIONS_DIR = CORE_DIR . '/exceptions';
-  const USER_EXCEPTIONS_DIR = APP_DIR . '/exceptions';
-
-  const USER_LIBS_DIR = APP_DIR . '/lib';
-
-  const DB_CORE = CORE_DIR . '/database';
-
   private static ArteAutoloader $inst;
   private array $dynamic_dependencies = [];
 
@@ -62,33 +64,36 @@ class ArteAutoloader
     if (isset($this->dynamic_dependencies[$classname]) && file_exists($this->dynamic_dependencies[$classname]))
       require $this->dynamic_dependencies[$classname];
 
-    else if (file_exists(self::DB_CORE . "/$classname.php"))
-      require self::DB_CORE . "/$classname.php";
+    else if (file_exists(DB_CORE . "/$classname.php"))
+      require DB_CORE . "/$classname.php";
 
-    else if (file_exists(self::MAPPERS_DIR . "/$classname.php"))
-      require self::MAPPERS_DIR . "/$classname.php";
-    else if (file_exists(self::ENTITIES_DIR . "/$classname.php"))
-      require self::ENTITIES_DIR . "/$classname.php";
-    else if (file_exists(self::SERVICES_DIR . "/$classname.php"))
-      require self::SERVICES_DIR . "/$classname.php";
+    else if (file_exists(MAPPERS_DIR . "/$classname.php"))
+      require MAPPERS_DIR . "/$classname.php";
+    else if (file_exists(ENTITIES_DIR . "/$classname.php"))
+      require ENTITIES_DIR . "/$classname.php";
+    else if (file_exists(SERVICES_DIR . "/$classname.php"))
+      require SERVICES_DIR . "/$classname.php";
+    
+    else if(file_exists(SYSTEM_SERVICES_DIR . "/$classname.php"))
+      require SYSTEM_SERVICES_DIR . "/$classname.php";
 
-    else if (file_exists(self::USER_HELPERS_DIR . "/$classname.php"))
-      require self::USER_HELPERS_DIR . "/$classname.php";
-    else if (file_exists(self::SYSTEM_HELPERS_DIR . "/$classname.php"))
-      require self::SYSTEM_HELPERS_DIR . "/$classname.php";
+    else if (file_exists(USER_HELPERS_DIR . "/$classname.php"))
+      require USER_HELPERS_DIR . "/$classname.php";
+    else if (file_exists(SYSTEM_HELPERS_DIR . "/$classname.php"))
+      require SYSTEM_HELPERS_DIR . "/$classname.php";
 
-    else if (file_exists(self::USER_BASES_DIR . "/$classname.php"))
-      require self::USER_BASES_DIR . "/$classname.php";
-    else if (file_exists(self::SYSTEM_BASES_DIR . "/$classname.php"))
-      require self::SYSTEM_BASES_DIR . "/$classname.php";
+    else if (file_exists(USER_BASES_DIR . "/$classname.php"))
+      require USER_BASES_DIR . "/$classname.php";
+    else if (file_exists(SYSTEM_BASES_DIR . "/$classname.php"))
+      require SYSTEM_BASES_DIR . "/$classname.php";
 
-    else if (file_exists(self::USER_EXCEPTIONS_DIR . "/$classname.php"))
-      require self::USER_EXCEPTIONS_DIR . "/$classname.php";
-    else if (file_exists(self::SYSTEM_EXCEPTIONS_DIR . "/$classname.php"))
-      require self::SYSTEM_EXCEPTIONS_DIR . "/$classname.php";
+    else if (file_exists(USER_EXCEPTIONS_DIR . "/$classname.php"))
+      require USER_EXCEPTIONS_DIR . "/$classname.php";
+    else if (file_exists(SYSTEM_EXCEPTIONS_DIR . "/$classname.php"))
+      require SYSTEM_EXCEPTIONS_DIR . "/$classname.php";
 
-    else if (file_exists(self::USER_LIBS_DIR . "/$classname.php"))
-      require self::USER_EXCEPTIONS_DIR . "/$classname.php";
+    else if (file_exists(USER_LIBS_DIR . "/$classname.php"))
+      require USER_EXCEPTIONS_DIR . "/$classname.php";
   }
 
   /**

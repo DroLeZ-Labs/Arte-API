@@ -6,6 +6,7 @@ error_reporting(E_ALL);
 
 $creations = require APP_DIR . "/model/database/creations.php";
 $insertions = require APP_DIR . "/model/database/insertions.php";
+$alters = require APP_DIR . "/model/database/alters.php";
 
 $db = DB::getDB();
 
@@ -40,6 +41,48 @@ foreach ($creations as $tablename => $columns) {
     $failures++;
 }
 
+
+// Alters
+echo "<br>Applying Alters...<br>";
+
+foreach ($alters as $operation) {
+  if ($operation['action'] == 'add column') {
+    try {
+      if (DB::getDB()->addColumn($operation['table'], $operation['column'], $operation['def']))
+        $successes++;
+      else
+        $failures++;
+    } catch (ColumnAlreadyExists $e) {
+      $successes++;
+    } catch (Exception | Error $e) {
+      $failures++;
+      echo trace($e);
+    }
+  } else if ($operation['action'] == 'add fk') {
+    try {
+      if (DB::getDB()->addFK($operation['table'], $operation['name'], $operation['column'], $operation['def']))
+        $successes++;
+      else
+        $failures++;
+    } catch (ColumnAlreadyExists $e) {
+      $successes++;
+    } catch (Exception | Error $e) {
+      $failures++;
+      echo trace($e);
+    }
+  } else if ($operation['action'] == 'modify column') {
+    try {
+      if (DB::getDB()->modifyColumn($operation['table'], $operation['column'], $operation['def']))
+        $successes++;
+      else
+        $failures++;
+    } catch (Exception | Error $e) {
+      $failures++;
+      echo trace($e);
+    }
+  }
+}
+
 // Updating table join map
 $refs = DB::getDB()->select('TABLE_NAME, COLUMN_NAME, REFERENCED_TABLE_NAME, REFERENCED_COLUMN_NAME', 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE', ['TABLE_SCHEMA' => $_ENV['DB_NAME'], ' AND REFERENCED_TABLE_NAME IS NOT NULL']);
 
@@ -59,7 +102,7 @@ foreach ($refs as $ref) {
   $joins[$table2][$table1] = "$table1.$column1 = $table2.$column2";
 }
 
-file_put_contents(APP_DIR . "/database/joins.json", json_encode($joins));
+file_put_contents(APP_DIR . "/model/database/joins.json", json_encode($joins));
 
 echo "<br>$successes Successes and $failures Failures<br>";
 

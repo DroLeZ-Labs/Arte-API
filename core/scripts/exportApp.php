@@ -11,8 +11,7 @@ mkdir($temp_dir . '/app', 0777);
 copyDirectory(APP_DIR, $temp_dir . '/app');
 
 mkdir($temp_dir . '/logs', 0777);
-copyDirectory(LOG_DIR, $temp_dir . '/logs');
-
+copyDirectory(LOG_DIR, $temp_dir . '/logs');  
 mkdir($temp_dir . '/media', 0777);
 copyDirectory(MEDIA_DIR, $temp_dir . '/media');
 

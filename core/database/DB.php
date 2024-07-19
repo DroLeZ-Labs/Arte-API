@@ -8,7 +8,6 @@ class DB
 
 	private static $instance;
 	protected $db;
-	private static array $joins;
 
 	public function __construct()
 	{
@@ -29,14 +28,6 @@ class DB
 			self::$instance = new self();
 
 		return self::$instance;
-	}
-
-	private static function getJoins(): array
-	{
-		if (!isset(self::$joins))
-			self::$joins = json_decode(file_get_contents(__DIR__ . '/joins.json'), true);
-
-		return self::$joins;
 	}
 
 	private static function joinToString(array $array, string $conjunction, string $relation)
@@ -294,4 +285,126 @@ class DB
 			return false;
 		}
 	}
+
+	public function tableExists(string $table_name)
+	{
+		return (bool) $this->select('COUNT(*) AS count', 'information_schema.TABLES', [
+			'`TABLE_SCHEMA`' => $_ENV['DB_NAME'],
+			'`TABLE_NAME`' => $table_name
+		])[0]['count'];
+	}
+
+	public function columnExists(string $table_name, string $column_name)
+	{
+		return (bool) $this->select('COUNT(*) AS count', 'information_schema.COLUMNS', [
+			'`TABLE_SCHEMA`' => $_ENV['DB_NAME'],
+			'`TABLE_NAME`' => $table_name,
+			'`COLUMN_NAME`' => $column_name
+		])[0]['count'];
+	}
+
+	public function constraintExists(string $table_name, string $constraint_name): bool
+	{
+		/**
+		 * @throws TableNotFound
+		 */
+		if (!$this->tableExists($table_name)) {
+			throw new TableNotFound("Table '$table_name' does not exist.");
+		}
+
+		return (bool) $this->select('COUNT(*) AS count', 'information_schema.TABLE_CONSTRAINTS', [
+			'`TABLE_SCHEMA`' => $_ENV['DB_NAME'],
+			'`TABLE_NAME`' => $table_name,
+			'`CONSTRAINT_NAME`' => $constraint_name
+		])[0]['count'];
+	}
+
+	public function addColumn(string $table_name, string $column_name, string $def): bool
+	{
+		/**
+		 * @throws TableNotFound
+		 * @throws ColumnAlreadyExists
+		 */
+		if (!$this->tableExists($table_name)) {
+			throw new TableNotFound("Table '$table_name' does not exist.");
+		}
+
+		if ($this->columnExists($table_name, $column_name)) {
+			throw new ColumnAlreadyExists("Column '$column_name' already exists in table '$table_name'.");
+		}
+
+		// Add the column
+		$alterTableSQL = "ALTER TABLE $table_name ADD $column_name $def";
+		$this->db->exec($alterTableSQL);
+		return true;
+	}
+
+	public function modifyColumn(string $table_name, string $column_name, string $def): bool
+	{
+		/**
+		 * Modify a column in the specified table.
+		 * 
+		 * @param string $table_name   The name of the table containing the column to be modified.
+		 * @param string $column_name  The name of the column to be modified.
+		 * @param string $def          The new definition for the column (e.g., data type and constraints).
+		 * @return bool                True if the column is modified successfully, false otherwise.
+		 * 
+		 * @throws TableNotFound       If the specified table does not exist.
+		 * @throws ColumnNotFound      If the specified column does not exist.
+		 */
+
+		if (!$this->tableExists($table_name)) {
+			throw new TableNotFound("Table '$table_name' does not exist.");
+		}
+
+		if (!$this->columnExists($table_name, $column_name)) {
+			throw new ColumnNotFound("Column '$column_name' does not exist in table '$table_name'.");
+		}
+
+		// Modify the column
+		$alterTableSQL = "ALTER TABLE $table_name MODIFY $column_name $def";
+		try {
+			$this->db->exec($alterTableSQL);
+			return true;
+		} catch (PDOException $exception) {
+			echo $exception->getMessage();
+			return false;
+		}
+	}
+
+	public function addFK(string $table_name, string $constraint_name, string $column_name, string $def): bool
+	{
+		/**
+		 * @throws TableNotFound
+		 * @throws ColumnAlreadyExists
+		 */
+		if (!$this->tableExists($table_name)) {
+			throw new TableNotFound("Table '$table_name' does not exist.");
+		}
+
+		if ($this->columnExists($table_name, $column_name)) {
+			throw new ColumnAlreadyExists("Column '$column_name' already exists in table '$table_name'.");
+		}
+
+		if ($this->constraintExists($table_name, $constraint_name))
+			throw new ConstraintAlreadyExists("Constraint $constraint_name Already Exists in table $table_name");
+
+		// Add the column
+		$alterTableSQL = "ALTER TABLE $table_name ADD CONSTRAINT $constraint_name FOREIGN KEY ($column_name) $def";
+		$this->db->exec($alterTableSQL);
+		return true;
+	}
+}
+
+class ColumnAlreadyExists extends Exception
+{
+}
+class ConstraintAlreadyExists extends Exception
+{
+}
+class TableNotFound extends Exception
+{
+}
+class ColumnNotFound extends Exception
+{
 }

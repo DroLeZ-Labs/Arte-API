@@ -17,7 +17,6 @@ abstract class Authenticated extends Endpoint
         return new Response('Unauthorized', 401);
 
       $this->user = new User($data->id);
-      $this->user->setSync(false);
 
       unset($this->request['Authorization']);
     };

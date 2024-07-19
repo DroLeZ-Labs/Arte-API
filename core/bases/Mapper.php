@@ -98,7 +98,7 @@ abstract class Mapper
     if ($id) {
       $entity = new static::$entity_type($id);
       $entity->load($entity_data);
-      $entity->setSync(true);
+      $entity->setLoaded(true);
       $entity->resetChanges();
       return $entity;
     }
@@ -115,13 +115,15 @@ abstract class Mapper
   {
     $db = DB::getDB();
 
-    if ($this->entity->inSync())
+    if (!count($this->entity->getChanges()))
       return true;
 
-    if ($result = $db->update(static::$table, $this->entity->getChanges(), $this->entity->getID())) {
-      $this->entity->setSync(true);
+    if ($result = $db->update(
+      static::$table,
+      $this->entity->getChanges(),
+      $this->entity->getID()
+    ))
       $this->entity->resetChanges();
-    }
 
     return (bool) $result;
   }
@@ -148,7 +150,7 @@ abstract class Mapper
     if ($items = DB::getDB()->select('*', static::$table, $filters)) {
       $entity = new static::$entity_type($items[0]['id']);
       $entity->load($items[0]);
-      $entity->setSync(true);
+      $entity->setLoaded(true);
       return $entity;
     }
     return null;
