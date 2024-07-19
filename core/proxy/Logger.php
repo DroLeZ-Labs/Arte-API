@@ -9,13 +9,8 @@ class ArteLogger
    * @var string The log file path.
    */
   private static string $log_file;
-  private array $logs;
+  private static $fhand;
   private static ArteLogger $inst;
-
-  /**
-   * @var Ndate The current date.
-   */
-  private Ndate $date;
 
   /**
    * Logger constructor.
@@ -30,16 +25,8 @@ class ArteLogger
       mkdir(LOG_DIR);
     self::$log_file = LOG_DIR . "/" . (new Ndate())->format() . ".log";
 
-    $this->date = new Ndate();
-
-    if (file_exists(self::$log_file))
-      $this->logs = json_decode(file_get_contents(self::$log_file), true) ?? [];
-    else
-      $this->logs = [];
-
-    if (!$fhand = fopen(self::$log_file, "w"))
+    if (!self::$fhand = fopen(self::$log_file, "a"))
       throw new PermissionDenied(self::$log_file);
-    else fclose($fhand);
   }
 
   public static function getLogger(): ArteLogger
@@ -60,32 +47,27 @@ class ArteLogger
    */
   public function log(Route $route, Response $response): void
   {
-    $fhand = fopen(self::$log_file, "w");
-
-    if (!$fhand)
-      throw new Exception("Server Permission Error");
-
     $response_body = $response->getCode() > 204 ? json_encode($response->getBody()) : "success";
 
     $duration = isset($route->endpoint) ? $route->endpoint->getDuration() : 0;
 
-    $this->logs[] = [
+    $log = [
       'route' => $route->uri,
       'payload' => json_encode($_REQUEST, JSON_UNESCAPED_UNICODE),
       'response' => $response->getCode() . " $response_body",
-      'date' => $this->date->format(Ndate::DATE_TIME),
+      'date' => (new Ndate)->format(Ndate::DATE_TIME),
       'endpoint_duration' => $duration,
       'client_ip' => $_SERVER['REMOTE_ADDR'],
       'hidden_buffer' => substr($response->hidden_buffer, 0, 1000)
     ];
 
     if (!fwrite(
-      $fhand,
-      json_encode($this->logs, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+      self::$fhand,
+      json_encode($log, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE). "\n\n"
     ) && DEBUG)
       throw new Exception('Logging Failed');
 
-    fclose($fhand);
+    fclose(self::$fhand);
   }
 
   /**
@@ -110,11 +92,5 @@ class ArteLogger
       throw new Exception('Logging Failed');
 
     fclose($fhand);
-  }
-
-  public function getLogs(): string
-  {
-    $array = array_reverse($this->logs);
-    return str_replace('\\"', '"', json_encode($array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
   }
 }

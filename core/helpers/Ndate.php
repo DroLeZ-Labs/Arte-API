@@ -95,4 +95,12 @@ class Ndate extends DateTime
 
     return $sign1 * $sign2 < 0;
   }
+
+  public function before(Ndate $date) {
+    return $this->minutesUntil($date) > 0;
+  }
+
+  public function after(Ndate $date) {
+    return $this->minutesUntil($date) < 0;
+  }
 }
