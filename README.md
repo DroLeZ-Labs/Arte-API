@@ -1,1 +1,1 @@
-[Visit Arte Documentation](github.com/lawaty/Arte-Documentation)
+[Visit Arte Documentation](https://github.com/lawaty/Arte-Documentation)
