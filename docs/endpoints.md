@@ -107,7 +107,7 @@ abstract class Authenticated extends Endpoint {
 
 ### 7 Automated Logger
 
-The framework logs all requests to API_ROOT/logs by day.
+The framework logs all requests to API_ROOT/logs by date.
 
 ### 8 Automated Tests
 
