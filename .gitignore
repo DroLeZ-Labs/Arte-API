@@ -11,6 +11,6 @@
 **/*.err
 
 # Environment Variables
-.env
+**/.env
 
 core/scripts/*.zip

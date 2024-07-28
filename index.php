@@ -23,11 +23,15 @@ else {
     else
       $response = $route->endpoint->run();
   } catch (Exception | Error $e) {
-    $code = is_integer($e->getCode()) ? $e->getCode() : 500;
-    $response = new Response(trace($e), $code);
+    if ($e instanceof Error)
+      $code = 500;
+    else
+      $code = is_integer($e->getCode()) ? $e->getCode() : 500;
+    if (DEBUG)
+      $response = new Response(trace($e), $code);
+    else $response = new Response('Something Went Wrong!', $code);
   }
 }
-
 
 $response->echo();
 
