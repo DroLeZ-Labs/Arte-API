@@ -11,13 +11,12 @@ class UpdateArte extends RootOnly
   {
     $curl = new ArteCurl('https://arte-store.drolez-apps.cloud/downloads/arte-core');
     $curl->setHeaders([
-      'Authorization' => 'Bearer '. $_ENV['License']
+      'Authorization' => 'Bearer ' . $_ENV['License']
     ]);
 
-    try{
+    try {
       $response = $curl->send('GET');
-    }
-    catch (Exception $e) {
+    } catch (Exception $e) {
       return new Response("Error Curling Arte Store: " . $curl->getError());
     }
 
@@ -39,18 +38,33 @@ class UpdateArte extends RootOnly
         }
 
         $file = CORE_DIR . '/arte-core.zip';
-        file_put_contents($file, $response);
+        file_put_contents($file, $response->getBody());
         chmod($file, 0777);
 
         $zip = new ZipArchive();
-        if ($zip->open($file) === true) {
+        $zip_status = $zip->open($file);
+        if ($zip_status === true) {
           // Extract the contents
-          if ($zip->extractTo(CORE_DIR));
-          $zip->close();
+          if ($zip->extractTo(CORE_DIR))
+            $zip->close();
+          else {
+            deleteDirectory(CORE_DIR);
+            rename(CORE_DIR . '-old', CORE_DIR);
+            return new Response('Couldn\'t extract to core directory, returning everything as it was.', 500);
+          }
+
           chmodRecursive(CORE_DIR, 0777);
+          unlink(ROOT_DIR . '/.htaccess');
           rename(CORE_DIR . '/.htaccess', ROOT_DIR . '/.htaccess');
+          chmod(ROOT_DIR . '/.htaccess', 0777);
+          unlink(ROOT_DIR . '/autoload.php');
           rename(CORE_DIR . '/autoload.php', ROOT_DIR . '/autoload.php');
+          chmod(ROOT_DIR . '/autoload.pph', 0777);
+
+          unlink(ROOT_DIR . '/index.php');
           rename(CORE_DIR . '/index.php', ROOT_DIR . '/index.php');
+          chmod(ROOT_DIR . '/index.php', 0777);
+
           unlink($file);
 
           // deleteDirectory(CORE_DIR . '-old');
@@ -61,7 +75,7 @@ class UpdateArte extends RootOnly
       case 403:
         return new Response("Contact lawaty@drolez-apps.cloud to obtain a license");
       default:
-        return new Response("Unexpected Error Occured", 500);
+        return new Response($response, $httpCode);
     }
   }
 }

@@ -3,7 +3,7 @@
 class ArteCurl
 {
   private string $url;
-  private CurlHandle $curl;
+  private ?CurlHandle $curl;
   private array $headers = [];
   private array $response_headers = [];
   private string $error = '';
