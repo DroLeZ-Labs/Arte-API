@@ -54,16 +54,12 @@ class UpdateArte extends RootOnly
           }
 
           chmodRecursive(CORE_DIR, 0777);
-          unlink(ROOT_DIR . '/.htaccess');
-          rename(CORE_DIR . '/.htaccess', ROOT_DIR . '/.htaccess');
-          chmod(ROOT_DIR . '/.htaccess', 0777);
-          unlink(ROOT_DIR . '/autoload.php');
-          rename(CORE_DIR . '/autoload.php', ROOT_DIR . '/autoload.php');
-          chmod(ROOT_DIR . '/autoload.pph', 0777);
-
-          unlink(ROOT_DIR . '/index.php');
-          rename(CORE_DIR . '/index.php', ROOT_DIR . '/index.php');
-          chmod(ROOT_DIR . '/index.php', 0777);
+          $files = scandir(CORE_DIR . '/root');
+          foreach($files as $a_root_file) {
+            unlink(ROOT_DIR . '/' . $a_root_file);
+            rename(CORE_DIR . '/' . $a_root_file, ROOT_DIR . '/' . $a_root_file);
+            chmod(ROOT_DIR . '/' . $a_root_file, 0777);
+          }
 
           unlink($file);
 
