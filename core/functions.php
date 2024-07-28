@@ -121,7 +121,7 @@ function copyDirectory($source, $destination)
 
   // Loop through all files and subdirectories in the source directory
   while (false !== ($file = readdir($dir))) {
-    if ($file == '.' || $file == '..' || $file == 'scripts') {
+    if ($file == '.' || $file == '..' || $file == 'temp') {
       continue; // Skip current and parent directory entries
     }
 

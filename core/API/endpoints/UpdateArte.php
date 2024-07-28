@@ -66,7 +66,6 @@ class UpdateArte extends RootOnly
               $info[] = "Couldn't update $a_root_file, Consider updating them manually using src located at core/root";
               continue;
             }
-            unlink(CORE_DIR . '/root/' . $a_root_file);
           }
           if ($all_root_files_updated)
             deleteDirectory(CORE_DIR . '/root');
