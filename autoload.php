@@ -71,29 +71,26 @@ class ArteAutoloader
       require MAPPERS_DIR . "/$classname.php";
     else if (file_exists(ENTITIES_DIR . "/$classname.php"))
       require ENTITIES_DIR . "/$classname.php";
+    
     else if (file_exists(SERVICES_DIR . "/$classname.php"))
       require SERVICES_DIR . "/$classname.php";
-    
-    else if(file_exists(SYSTEM_SERVICES_DIR . "/$classname.php"))
-      require SYSTEM_SERVICES_DIR . "/$classname.php";
-
     else if (file_exists(USER_HELPERS_DIR . "/$classname.php"))
       require USER_HELPERS_DIR . "/$classname.php";
-    else if (file_exists(SYSTEM_HELPERS_DIR . "/$classname.php"))
-      require SYSTEM_HELPERS_DIR . "/$classname.php";
-
     else if (file_exists(USER_BASES_DIR . "/$classname.php"))
       require USER_BASES_DIR . "/$classname.php";
-    else if (file_exists(SYSTEM_BASES_DIR . "/$classname.php"))
-      require SYSTEM_BASES_DIR . "/$classname.php";
-
     else if (file_exists(USER_EXCEPTIONS_DIR . "/$classname.php"))
       require USER_EXCEPTIONS_DIR . "/$classname.php";
-    else if (file_exists(SYSTEM_EXCEPTIONS_DIR . "/$classname.php"))
-      require SYSTEM_EXCEPTIONS_DIR . "/$classname.php";
-
     else if (file_exists(USER_LIBS_DIR . "/$classname.php"))
       require USER_EXCEPTIONS_DIR . "/$classname.php";
+
+    else if (file_exists(SYSTEM_SERVICES_DIR . "/$classname.php"))
+      require SYSTEM_SERVICES_DIR . "/$classname.php";
+    else if (file_exists(SYSTEM_HELPERS_DIR . "/$classname.php"))
+      require SYSTEM_HELPERS_DIR . "/$classname.php";
+    else if (file_exists(SYSTEM_BASES_DIR . "/$classname.php"))
+      require SYSTEM_BASES_DIR . "/$classname.php";
+    else if (file_exists(SYSTEM_EXCEPTIONS_DIR . "/$classname.php"))
+      require SYSTEM_EXCEPTIONS_DIR . "/$classname.php";
   }
 
   /**

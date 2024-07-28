@@ -6,7 +6,7 @@ class UninstallPlugin extends RootOnly
   {
     $this->init([
       'name' => [true, Regex::generic(1, 200)]
-    ], $_POST);
+    ], $_REQUEST);
   }
 
   public function handle(): Response

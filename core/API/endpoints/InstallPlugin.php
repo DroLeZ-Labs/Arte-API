@@ -6,7 +6,7 @@ class InstallPlugin extends RootOnly
   {
     $this->init([
       'name' => [true, Regex::separated('/')]
-    ], $_POST);
+    ], $_REQUEST);
   }
 
   public function handle(): Response

@@ -64,6 +64,16 @@ class Response
   }
 
   /**
+   * Retrieves the response headers.
+   *
+   * @return array The response headers.
+   */
+  public function getHeaders()
+  {
+    return $this->headers;
+  }
+
+  /**
    * Outputs the response.
    */
   public function echo(): void
