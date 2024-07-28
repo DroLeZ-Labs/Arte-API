@@ -12,8 +12,10 @@ spl_autoload_register(function ($classname) {
 });
 
 $prod = $_ENV['PROD'] ?? false;
-if (isset($_REQUEST['debug']) && !$prod)
+if (isset($_REQUEST['debug']) && !$prod){
   define('DEBUG', true);
+  ini_set('display_errors', 1);
+}
 else
   define('DEBUG', false);
 
@@ -34,7 +36,9 @@ foreach ($plugins as $plugin)
  * Routing to dev tools
  */
 if (!$prod) {
-  $requested = trim(explode(API_BASE, parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH))[1] ?? '', '/');
+  if (!empty(API_BASE))
+    $requested = trim(explode(API_BASE, parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH))[1] ?? '', '/');
+  else $requested = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
   if ($requested == 'db') {
     require CORE_DIR . "/database/phpliteadmin.php";
     exit;
