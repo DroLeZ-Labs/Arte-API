@@ -54,12 +54,13 @@ class UpdateArte extends RootOnly
           }
 
           chmodRecursive(CORE_DIR, 0777);
-          $files = scandir(CORE_DIR . '/root');
-          foreach($files as $a_root_file) {
+          $root_files = scandir(CORE_DIR . '/root');
+          foreach($root_files as $a_root_file) {
             unlink(ROOT_DIR . '/' . $a_root_file);
             rename(CORE_DIR . '/' . $a_root_file, ROOT_DIR . '/' . $a_root_file);
             chmod(ROOT_DIR . '/' . $a_root_file, 0777);
           }
+          deleteDirectory(CORE_DIR . '/root');
 
           unlink($file);
 
