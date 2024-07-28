@@ -29,7 +29,7 @@ abstract class Endpoint
     $this->expect = $expect;
     $this->start_time = floor(microtime(true) * 1000);
     $this->request = [...$this->request, ...$request];
-    $this->validator = new Validator($expect, static::class);
+    $this->validator = new Validator($expect);
     $this->duration = 0;
   }
 
@@ -70,8 +70,13 @@ abstract class Endpoint
   public function run(): Response
   {
     // Validation
-    if ($invalid = $this->validator->validate($this->request))
-      return new Response("Invalid parameter: $invalid", 400);
+    if ($invalid = $this->validator->validate($this->request)) {
+      $error = $this->validator->formatError($invalid, $this->request);
+      if(DEBUG)
+        $error .= "<br>" . $this->validator->printTree();
+      
+      return new Response($error, 400);
+    }
     $this->request = $this->validator->getFiltered();
 
     // Handlers
@@ -109,8 +114,7 @@ abstract class Endpoint
     $validator = new Validator(
       [
         'no_trials' => [false, Regex::INT]
-      ],
-      static::class
+      ]
     );
 
     if (!$this instanceof Testable)

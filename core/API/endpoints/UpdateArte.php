@@ -55,17 +55,26 @@ class UpdateArte extends RootOnly
 
           chmodRecursive(CORE_DIR, 0777);
           $root_files = scandir(CORE_DIR . '/root');
-          foreach($root_files as $a_root_file) {
-            unlink(ROOT_DIR . '/' . $a_root_file);
-            rename(CORE_DIR . '/' . $a_root_file, ROOT_DIR . '/' . $a_root_file);
-            chmod(ROOT_DIR . '/' . $a_root_file, 0777);
+          $all_root_files_updated = true;
+          $info = [];
+          foreach ($root_files as $a_root_file) {
+            if ($a_root_file == '..' || $a_root_file == '.')
+              continue;
+
+            if (!rename(CORE_DIR . '/root/' . $a_root_file, ROOT_DIR . '/' . $a_root_file)) {
+              $all_root_files_updated = false;
+              $info[] = "Couldn't update $a_root_file, Consider updating them manually using src located at core/root";
+              continue;
+            }
+            unlink(CORE_DIR . '/root/' . $a_root_file);
           }
-          deleteDirectory(CORE_DIR . '/root');
+          if ($all_root_files_updated)
+            deleteDirectory(CORE_DIR . '/root');
 
           unlink($file);
 
           // deleteDirectory(CORE_DIR . '-old');
-          return new Response;
+          return new Response(['errors' => $info]);
         } else {
           return new Response("Failed to open the downloaded zip file", 500);
         }

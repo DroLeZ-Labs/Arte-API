@@ -33,6 +33,13 @@ class Response
    */
   public function __construct($body = '', int $code = 200, array $extra_headers = [])
   {
+    if ($body instanceof Response){
+      $this->body = $body->getBody();
+      $this->code = $body->getCode();
+      $this->headers = $body->getHeaders();
+      return ;
+    }
+
     if (is_iterable($body) || $body instanceof JsonSerializable)
       $this->body = json_encode($body, JSON_UNESCAPED_UNICODE);
     else

@@ -17,9 +17,15 @@ class Validator
   public function __construct(array $expect, bool $is_many = SINGLE)
   {
     foreach ($expect as $param => $criteria) {
-      if (!isset($criteria[0], $criteria[1], $criteria[2])) {
-        throw new InvalidArgumentException("Criteria must have three elements: required, is_many, validation but found: " . print_r($criteria, true));
+      if(!isset($criteria[2]))
+        $criteria[2] = false;
+
+      if (!isset($criteria[0], $criteria[1])) {
+        throw new InvalidArgumentException("Criteria must have at least two elements: required, validation, and optionally is_many but found: " . print_r($criteria, true));
       }
+
+      var_dump($criteria);
+
       if (is_array($criteria[1])) { // Nesting Validators
         $this->expect[$param] = [
           $criteria[0],
@@ -34,10 +40,24 @@ class Validator
     }
   }
 
+  public function formatError(string $path_to_invalid, array $data) {
+    $keys = explode(' -> ', $path_to_invalid);
+    $value = $data;
+    foreach ($keys as $key) {
+      if (preg_match('/\[(.*?)\]$/', $key, $matches)) {
+        $value = $value[explode('[', $key)][0][$matches[1]] ?? null;
+      } else
+        $value = $value[$key];
+    }
+
+    $value = json_encode($value);
+    return "Invalid $path_to_invalid found:\n $value";
+  }
+
   public function validate(array $input, string $path = ''): ?string
   {
     foreach ($this->expect as $param => $criteria) {
-      [$required, $is_many, $validation] = $criteria;
+      [$required, $validation, $is_many] = $criteria;
       $currentPath = $path ? "$path -> $param" : $param;
 
       if ($required === REQ && empty($input[$param])) {
@@ -130,21 +150,6 @@ class Validator
     return $this->filtered;
   }
 
-  public function throw(string $invalid, array $data): void
-  {
-    $keys = explode(' -> ', $invalid);
-    $value = $data;
-    foreach ($keys as $key) {
-      if (preg_match('/\[(.*?)\]$/', $key, $matches)) {
-        $value = $value[explode('[', $key)][0][$matches[1]] ?? null;
-      } else
-        $value = $value[$key];
-    }
-
-    $value = json_encode($value);
-    throw new InvalidData($invalid . " found:\n $value");
-  }
-
   public function printTree(int $indentation = 0): void
   {
     echo "<pre>";
@@ -170,10 +175,6 @@ class Validator
 
     echo "</pre>";
   }
-}
-
-class InvalidData extends Exception
-{
 }
 
 // // Example usage of the Validator class
