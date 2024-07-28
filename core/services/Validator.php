@@ -113,7 +113,7 @@ class Validator
     $result = [];
     foreach ($this->expect as $param => $criteria) {
       if (isset($input[$param])) {
-        [$required, $is_many, $validation] = $criteria;
+        [$required, $validation, $is_many] = $criteria;
         if ($validation instanceof Validator) {
           if ($is_many === SINGLE) {
             $result[$param] = $validation->filterInput($input[$param]);
