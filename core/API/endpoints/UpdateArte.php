@@ -75,7 +75,9 @@ class UpdateArte extends RootOnly
           // deleteDirectory(CORE_DIR . '-old');
           return new Response(['errors' => $info]);
         } else {
-          return new Response("Failed to open the downloaded zip file", 500);
+          deleteDirectory(CORE_DIR);
+          rename(CORE_DIR . '-old', CORE_DIR);
+          return new Response("Failed to open the downloaded zip file. Error code: $zip_status", 500);
         }
       case 403:
         return new Response("Contact lawaty@drolez-apps.cloud to obtain a license");
