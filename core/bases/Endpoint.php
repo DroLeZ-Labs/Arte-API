@@ -1,5 +1,7 @@
 <?php
 
+require_once SYSTEM_SERVICES_DIR . '/Validator.php';
+
 /* The above class is an abstract class in PHP that serves as a base for creating endpoints, handling requests, and performing tests on those endpoints. */
 abstract class Endpoint
 {

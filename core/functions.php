@@ -24,7 +24,6 @@ function trace($e, $seen = null): string
 {
   $starter = $seen ? 'Caused by: ' : '';
   $result = array();
-  if (!$seen) $seen = array();
   $trace = $e->getTrace();
   $prev = $e->getPrevious();
   $result[] = sprintf('%s%s: %s', $starter, get_class($e), $e->getMessage());
@@ -32,10 +31,6 @@ function trace($e, $seen = null): string
   $line = $e->getLine();
   while (true) {
     $current = "$file:$line";
-    if (is_array($seen) && in_array($current, $seen)) {
-      $result[] = sprintf(' ... %d more', count($trace) + 1);
-      break;
-    }
     $result[] = sprintf(
       ' at %s%s%s(%s%s%s)',
       count($trace) && array_key_exists('class', $trace[0]) ? str_replace('\\', '.', $trace[0]['class']) : '',
@@ -45,12 +40,10 @@ function trace($e, $seen = null): string
       $line === null ? '' : ':',
       $line === null ? '' : $line
     );
-    if (is_array($seen))
-      $seen[] = "$file:$line";
     if (!count($trace))
       break;
     $file = array_key_exists('file', $trace[0]) ? $trace[0]['file'] : 'Unknown Source';
-    $line = array_key_exists('file', $trace[0]) && array_key_exists('line', $trace[0]) && $trace[0]['line'] ? $trace[0]['line'] : null;
+    $line = array_key_exists('file', $trace[0]) && array_key_exists('line', $trace[0]) ? $trace[0]['line'] : null;
     array_shift($trace);
   }
   $result = join("\n", $result);

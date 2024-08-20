@@ -41,7 +41,6 @@ require_once ROOT_DIR . '/vendor/autoload.php';
 require_once CORE_DIR . '/proxy/Router.php';
 require_once CORE_DIR . "/functions.php";
 
-
 class ArteAutoloader
 {
   private static ArteAutoloader $inst;
